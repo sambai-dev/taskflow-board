@@ -4,9 +4,14 @@ import Link from "next/link";
 import { Trello, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { isSignedIn, user } = useUser();
+  const pathname = usePathname();
+  const isDashboardPage = pathname === "/dashboard";
+  const isBoardPage = pathname.startsWith("/board");
+
   return (
     <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
@@ -16,17 +21,26 @@ export default function Navbar() {
         </div>
         <div className="flex items-center space-x-2 sm:space-x-4">
           {isSignedIn ? (
-            <div className="flex items-center space-x-3">
-              <span className="hidden sm:inline text-sm text-gray-600">
-                Welcome, {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress}
-              </span>
-              <Link href="/dashboard">
-                <Button size="sm" className="text-xs sm:text-sm">
-                  Dashboard <ArrowRight />
-                </Button>
-              </Link>
-              <UserButton afterSignOutUrl="/" />
-            </div>
+            isDashboardPage ? (
+              <div className="flex items-center space-x-3">
+                <span className="hidden sm:inline text-sm text-gray-600">
+                  Welcome, {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress}
+                </span>
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <span className="hidden sm:inline text-sm text-gray-600">
+                  Welcome, {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress}
+                </span>
+                <Link href="/dashboard">
+                  <Button size="sm" className="text-xs sm:text-sm">
+                    Dashboard <ArrowRight />
+                  </Button>
+                </Link>
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            )
           ) : (
             <div className="flex items-center space-x-2 sm:space-x-3">
               <SignInButton>
@@ -46,3 +60,6 @@ export default function Navbar() {
     </header>
   );
 }
+
+
+
