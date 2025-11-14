@@ -71,7 +71,7 @@ export const boardDataService = {
 
        await Promise.all(
         defaultColumn.map((column) => {
-            columnServices.createColumn(supabase, {
+            return columnServices.createColumn(supabase, {
                 ...column,
                 board_id: board.id,
                 user_id: boardData.userId

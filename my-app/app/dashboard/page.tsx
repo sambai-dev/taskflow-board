@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { Loader2, Plus, Trello } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
+
 export default function DashboardPage() {
   const { user } = useUser();
   const { createBoard, boards, loading, error } = useBoards();
@@ -52,22 +53,56 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8"></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    Total Boards
-                    </p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Boards</p>
                   <p className="text-xl sm:text-2xl font-bold text-gray-900">{boards.length}</p>
                 </div>
-                <div className="h-10 w-10 sm:h-12 sm:w-12 abg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Trello className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Recent Activity</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{boards.filter((board) => {
+                    const updatedAt = new Date(board.updated_at);
+                    const oneWeekAgo = new Date()
+                    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                    return updatedAt > oneWeekAgo;
+                  }).length
+                  }
+                  </p>
+                </div>
+                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Trello className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Boards</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{boards.length}</p>
+                </div>
+                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Trello className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+         
+        </div>
+
       </main>
     </div>
   );
