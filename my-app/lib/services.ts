@@ -1,8 +1,6 @@
-
 import { Column, Board } from "@/lib/supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
-// Server side requires await, but the client doesn't need it
-// const supabase = createClient();
+
 export const boardService = {
     async getBoards(supabase: SupabaseClient, userId: string): Promise<Board[]> {
         const { data, error } = await supabase
@@ -82,4 +80,4 @@ export const boardDataService = {
        )
        return board
     },
-};
+    };
