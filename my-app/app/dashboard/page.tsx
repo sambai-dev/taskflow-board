@@ -4,12 +4,14 @@ import Navbar from "@/components/ui/navbar";
 import { Button } from "@/components/ui/button";
 import { useBoards } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
-import { Filter, List, Loader2, Plus, Search, Trello } from "lucide-react";
+import { Filter, Link, List, Loader2, Plus, Search, Trello } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Rocket } from "lucide-react";
 import { Grid3x3 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { CardHeader } from "@/components/ui/card";
 
 
 export default function DashboardPage() {
@@ -157,11 +159,27 @@ export default function DashboardPage() {
             <Input id="search" placeholder="Search boards..." className="pl-10"/>
           </div>
 
-          {/* Boards Grid/List */}
-          {boards.length === 0 ? (
-            <div>No Boards yet</div>
-          ) : viewMode === "grid" ? (<div></div>) : (<div></div>)}
+        {/* Boards Grid/List */}
+        {boards.length === 0 ? (
+          <div>No boards yet</div>
+        ) : viewMode === "grid" ? (
+          <div>
+            {boards.map((board) => (
+              <Link href={`/boards/${board.id}`}>
+                <Card>
+                  <CardHeader>
+                    <div>
+                      <div className={" "} />
+                    </div>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
           </div>
+        ) : (
+          <div></div>
+        )}
+        </div>
       </main>
     </div>
   );
