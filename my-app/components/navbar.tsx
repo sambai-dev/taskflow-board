@@ -6,12 +6,58 @@ import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 
-export default function Navbar() {
+interface Props{
+  boardTitle?: string;
+  onEditBoard?: () => void;
+}
+export default function Navbar({boardTitle, onEditBoard}: Props) {
   const { isSignedIn, user } = useUser();
   const pathname = usePathname();
   const isDashboardPage = pathname === "/dashboard";
   const isBoardPage = pathname.startsWith("/board");
 
+
+if (isDashboardPage) {
+    return (
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Trello className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">
+              Trello Clone
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <UserButton />
+          </div>
+        </div>
+      </header>
+    );
+  }
+  if (isBoardPage) {
+    return (
+      <header className="bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Trello className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <span className="text-xl sm:text-2xl font-bold text-gray-900">
+              {boardTitle}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Button onClick={onEditBoard} size="sm" className="text-xs sm:text-sm">
+              Edit Board
+            </Button>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+
+
+  
   return (
     <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
