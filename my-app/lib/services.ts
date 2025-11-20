@@ -1,4 +1,4 @@
-import { Column, Board } from "@/lib/supabase/models";
+import { Column, Board, Task } from "@/lib/supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const boardService = {
@@ -87,6 +87,30 @@ export const columnService = {
   },
 };
 
+export const taskService = {
+  async getTasksByBoard(
+    supabase: SupabaseClient,
+    boardId: string
+  ): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select(
+        `
+        *,
+        columns!inner(board_id)
+        `
+      )
+      .eq("columns.board_id", boardId)
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+
+    return data || [];
+  },
+}
+
+
+
 export const boardDataService = {
   async getBoardWithColumns(supabase: SupabaseClient, boardId: string) {
     const [board, columns] = await Promise.all([
@@ -96,9 +120,16 @@ export const boardDataService = {
 
     if (!board) throw new Error("Board not found");
 
+    const tasks = await taskService.getTasksByBoard(supabase, boardId)
+
+    const columnsWithTasks = columns.map((column) => ({
+      ...column,
+      tasks: tasks.filter((task) => task.column_id === column.id),
+    }))
+
     return {
       board,
-      columns,
+      columnsWithTasks,
     };
   },
 

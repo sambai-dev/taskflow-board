@@ -10,7 +10,7 @@ import { useState } from "react";
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
-  const { board, updateBoard } = useBoard(id);
+  const { board, updateBoard, columns } = useBoard(id);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -152,6 +152,17 @@ export default function BoardPage() {
       </Dialog>
 
       {/* Board Content */}
+      <main>
+        {/* Stats */}
+        <div>
+          <div>
+            <div>
+              <span>Total Tasks:</span>
+              {columns.reduce((sum, col) => sum + col.tasks.length, 0)}
+            </div>
+          </div>
+        </div>
+      </main>
       
     </div>
   );
