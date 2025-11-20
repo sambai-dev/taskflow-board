@@ -23,7 +23,7 @@ export function useBoards() {
   }, [user, supabase]);
 
   async function loadBoards() {
-    if (!user) return;
+    if (!user || !supabase) return;
 
     try {
       setLoading(true);
@@ -42,7 +42,7 @@ export function useBoards() {
     description?: string;
     color?: string;
   }) {
-    if (!user) throw new Error("User not authenticated");
+    if (!user || !supabase) throw new Error("User not authenticated or Supabase not initialized");
 
     try {
       const newBoard = await boardDataService.createBoardWithDefaultColumns(
@@ -76,7 +76,7 @@ export function useBoard(boardId: string) {
   }, [boardId, supabase]);
 
   async function loadBoard() {
-    if (!boardId) return;
+    if (!boardId || !supabase) return;
 
     try {
       setLoading(true);
