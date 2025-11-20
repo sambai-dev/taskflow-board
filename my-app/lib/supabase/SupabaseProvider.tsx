@@ -28,7 +28,27 @@ export default function SupabaseProvider({
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
-                accessToken: async () => { const token = await session?.getToken(); return token ?? ''; },
+        global: {
+          // Get the Supabase token with a custom fetch method
+          fetch: async (url, options = {}) => {
+            const clerkToken = await session?.getToken();
+            console.log("SupabaseProvider: Token retrieved?", !!clerkToken);
+
+            // Insert the Clerk Supabase token into the headers
+            const headers = new Headers(options?.headers);
+            if (clerkToken) {
+              headers.set("Authorization", `Bearer ${clerkToken}`);
+            } else {
+              console.warn("SupabaseProvider: No Clerk token found for request", url);
+            }
+
+            // Call the default fetch
+            return fetch(url, {
+              ...options,
+              headers,
+            });
+          },
+        },
       }
     );
     Promise.resolve().then(() => {

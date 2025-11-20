@@ -7,7 +7,7 @@ export async function createClient() {
   const { getToken } = await auth();
   
   // Get the Supabase token from Clerk
-  const token = await getToken({ template: 'supabase' });
+  const token = await getToken();
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
