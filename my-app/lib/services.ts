@@ -42,15 +42,18 @@ export const boardService = {
     supabase: SupabaseClient,
     board: Omit<Board, "id" | "created_at" | "updated_at">
   ): Promise<Board> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { user_id, ...boardData } = board;
+    console.log("Creating board with data:", board);
     const { data, error } = await supabase
       .from("boards")
-      .insert(boardData)
+      .insert(board)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error creating board:", error);
+      throw error;
+    }
+    console.log("Board created successfully:", data);
     return data;
   },
 
