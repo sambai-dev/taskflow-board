@@ -310,6 +310,7 @@ export default function BoardPage() {
     createRealTask,
     setColumns,
     moveTask,
+    updateColumn,
   } = useBoard(id);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -553,17 +554,7 @@ export default function BoardPage() {
 
     if (!editingColumnTitle.trim() || !editingColumn) return;
 
-    await boardService.updateColumn(supabase!, editingColumn.id, {
-      title: editingColumnTitle.trim(),
-    });
-
-    setColumns((prev) =>
-      prev.map((col) =>
-        col.id === editingColumn.id
-          ? { ...col, title: editingColumnTitle.trim() }
-          : col
-      )
-    );
+    await updateColumn(editingColumn.id, editingColumnTitle.trim());
 
     setEditingColumnTitle("");
     setEditingColumn(null);
@@ -894,6 +885,7 @@ export default function BoardPage() {
               >
                 Cancel
               </Button>
+              <Button type="submit">Edit Column</Button>
             </div>
           </form>
         </DialogContent>

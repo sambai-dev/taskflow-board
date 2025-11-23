@@ -1,5 +1,10 @@
 "use client";
-import { boardDataService, taskService, boardService } from "@/lib/services";
+import {
+  boardDataService,
+  taskService,
+  boardService,
+  columnService,
+} from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { Board, ColumnWithTasks, Task } from "../supabase/models";
 import { useEffect, useState } from "react";
@@ -217,6 +222,24 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function updateColumn(columnId: string, title: string) {
+    try {
+      const updatedColumn = await columnService.updateColumnTitle(
+        supabase!,
+        columnId,
+        title
+      );
+      setColumns((prev) =>
+        prev.map((col) =>
+          col.id === columnId ? { ...col, ...updatedColumn } : col
+        )
+      );
+      return updatedColumn;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update column.");
+    }
+  }
+
   return {
     board,
     columns,
@@ -227,5 +250,6 @@ export function useBoard(boardId: string) {
     setColumns,
     moveTask,
     createColumn,
+    updateColumn,
   };
 }
