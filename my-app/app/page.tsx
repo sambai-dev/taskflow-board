@@ -13,12 +13,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { CardHeader } from "@/components/ui/card";
 import Link from "next/link";
+import { Dialog } from "@radix-ui/react-dialog";
+import { DialogHeader, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 
 export default function DashboardPage() {
   const { user } = useUser();
   const { createBoard, boards, loading, error } = useBoards();
   const[viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
 
   const handleCreateBoard = async () => {
     await createBoard({ title: "New Board" });
@@ -131,8 +134,8 @@ export default function DashboardPage() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Your Boards</h2>
             <p className="text-gray-600">Manage your projects and tasks</p>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-              <div className="flex items-center space-x-2 bg-white border p-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="flex items-center space-x-2 rounded bg-white border p-1">
 
                 <Button variant={viewMode === "grid" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("grid")}>
                   <Grid3x3 />
@@ -143,7 +146,7 @@ export default function DashboardPage() {
                 </Button>
               </div>
 
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(true)}>
                 <Filter />
                 Filter
               </Button>
@@ -182,7 +185,7 @@ export default function DashboardPage() {
                         Created{" "}
                         {new Date(board.created_at).toLocaleDateString()}
                       </span>
-                      <span>
+                      <span> 
                         Updated{" "}
                         {new Date(board.updated_at).toLocaleDateString()}
                       </span>
@@ -239,6 +242,20 @@ export default function DashboardPage() {
         )}
         </div>
       </main>
+
+
+      {/* Filter Dialog */}
+      <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+        <DialogContent className="w- [95vw] max-w-[425px] mx-auto">
+          <DialogHeader>
+            <DialogTitle>Filter Board</DialogTitle>
+            <p className="text-sm text-gray-600">Filter boards by title, date, or task count.</p>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+
+      {/* Create Board Dialog */}
     </div>
   );
 }

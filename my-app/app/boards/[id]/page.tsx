@@ -20,12 +20,6 @@
  */
 "use client";
 
-// ============================================================================
-// IMPORTS - Organized by category
-// ============================================================================
-
-// --- UI Components ---
-// Custom components for the app layout and structure
 import Navbar from "@/components/navbar";
 
 // Shadcn UI components - pre-built, accessible UI elements
