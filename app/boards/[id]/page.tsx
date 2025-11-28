@@ -70,7 +70,7 @@ import {
   useDroppable, // Hook to make an element accept drops
   useSensor, // Hook to configure input devices
   useSensors, // Hook to combine multiple sensors
-  PointerSensor, // Handles mouse/touch input
+  MouseSensor, // Handles mouse input
   TouchSensor, // Handles touch screen input
 } from "@dnd-kit/core";
 
@@ -407,9 +407,9 @@ export default function BoardPage() {
   const [isCreatingTask, setIsCreatingTask] = useState(false);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
       },
     }),
     useSensor(TouchSensor, {
