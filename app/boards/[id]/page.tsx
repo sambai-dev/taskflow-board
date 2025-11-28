@@ -108,7 +108,7 @@ function DroppableColumn({
 }: {
   column: ColumnWithTasks;
   children: React.ReactNode;
-  onCreateTask: (taskData: any) => Promise<void>;
+  onCreateTask: (columnId: string, taskData: any) => Promise<void>;
   onEditColumn: (column: ColumnWithTasks) => void;
 }) {
   // DRAG-AND-DROP SETUP
@@ -177,7 +177,10 @@ function DroppableColumn({
                 </p>
               </DialogHeader>
 
-              <form className="space-y-4" onSubmit={onCreateTask}>
+              <form
+                className="space-y-4"
+                onSubmit={(e) => onCreateTask(column.id, e)}
+              >
                 <div className="space-y-2">
                   <Label htmlFor="title">Title *</Label>
                   <Input
@@ -443,21 +446,21 @@ export default function BoardPage() {
     } catch {}
   }
 
-  async function createTaskWrapper(taskData: {
-    title: string;
-    description?: string;
-    assignee?: string;
-    dueDate?: string;
-    priority: "low" | "medium" | "high";
-  }) {
-    const targetColumn = columns[0];
-    if (!targetColumn) {
-      throw new Error("No column available to add task");
+  async function createTaskWrapper(
+    columnId: string,
+    taskData: {
+      title: string;
+      description?: string;
+      assignee?: string;
+      dueDate?: string;
+      priority: "low" | "medium" | "high";
     }
-    await createTask(targetColumn.id, taskData);
+  ) {
+    // Use the provided columnId instead of hardcoding to columns[0]
+    await createTask(columnId, taskData);
   }
 
-  async function handleCreateTask(e: any) {
+  async function handleCreateTask(columnId: string, e: any) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const taskData = {
@@ -470,7 +473,7 @@ export default function BoardPage() {
     };
     if (taskData.title.trim()) {
       try {
-        await createTaskWrapper(taskData);
+        await createTaskWrapper(columnId, taskData);
 
         const trigger = document.querySelector(
           '[data-state="open"]'
@@ -842,7 +845,10 @@ export default function BoardPage() {
                   </p>
                 </DialogHeader>
 
-                <form className="space-y-4" onSubmit={handleCreateTask}>
+                <form
+                  className="space-y-4"
+                  onSubmit={(e) => handleCreateTask(columns[0]?.id || "", e)}
+                >
                   <div className="space-y-2">
                     <Label htmlFor="title">Title *</Label>
                     <Input
