@@ -89,7 +89,18 @@ export function useBoards() {
     }
   }
 
-  return { boards, loading, error, createBoard };
+  async function deleteBoard(boardId: string) {
+    if (!user || !supabase) return;
+
+    try {
+      await boardService.deleteBoard(supabase, boardId);
+      setBoards((prev) => prev.filter((b) => b.id !== boardId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete board.");
+    }
+  }
+
+  return { boards, loading, error, createBoard, deleteBoard };
 }
 
 export function useBoard(boardId: string) {
@@ -251,6 +262,43 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function deleteColumn(columnId: string) {
+    try {
+      await columnService.deleteColumn(supabase!, columnId);
+      setColumns((prev) => prev.filter((col) => col.id !== columnId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete column.");
+    }
+  }
+
+  async function deleteTask(taskId: string, columnId: string) {
+    try {
+      await taskService.deleteTask(supabase!, taskId);
+      setColumns((prev) =>
+        prev.map((col) =>
+          col.id === columnId
+            ? {
+                ...col,
+                tasks: col.tasks.filter((task) => task.id !== taskId),
+              }
+            : col
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete task.");
+    }
+  }
+
+  async function deleteBoard(boardId: string) {
+    try {
+      await boardService.deleteBoard(supabase!, boardId);
+      // The caller (UI) should handle navigation after deletion
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete board.");
+      throw err; 
+    }
+  }
+
   return {
     board,
     columns,
@@ -263,5 +311,8 @@ export function useBoard(boardId: string) {
     moveTask,
     createTask,
     updateColumn,
+    deleteColumn,
+    deleteTask,
+    deleteBoard,
   };
 }

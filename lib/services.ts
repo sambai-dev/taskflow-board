@@ -154,6 +154,37 @@ export const boardService = {
     if (error) throw error;
     return data;
   },
+
+  async deleteBoard(supabase: SupabaseClient, boardId: string): Promise<void> {
+    // 1. Get all columns for this board to delete their tasks
+    const { data: columns } = await supabase
+      .from("columns")
+      .select("id")
+      .eq("board_id", boardId);
+
+    if (columns && columns.length > 0) {
+      const columnIds = columns.map((col) => col.id);
+      // 2. Delete all tasks in these columns
+      const { error: tasksError } = await supabase
+        .from("tasks")
+        .delete()
+        .in("column_id", columnIds);
+
+      if (tasksError) throw tasksError;
+
+      // 3. Delete the columns
+      const { error: columnsError } = await supabase
+        .from("columns")
+        .delete()
+        .eq("board_id", boardId);
+
+      if (columnsError) throw columnsError;
+    }
+
+    // 4. Delete the board
+    const { error } = await supabase.from("boards").delete().eq("id", boardId);
+    if (error) throw error;
+  },
 };
 
 export const columnService = {
@@ -200,6 +231,20 @@ export const columnService = {
     if (error) throw error;
     return data;
   },
+
+  async deleteColumn(supabase: SupabaseClient, columnId: string): Promise<void> {
+    // 1. Delete all tasks in this column
+    const { error: tasksError } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("column_id", columnId);
+
+    if (tasksError) throw tasksError;
+
+    // 2. Delete the column
+    const { error } = await supabase.from("columns").delete().eq("id", columnId);
+    if (error) throw error;
+  },
 };
 
 export const taskService = {
@@ -239,6 +284,11 @@ export const taskService = {
 
     if (error) throw error;
     return data;
+  },
+
+  async deleteTask(supabase: SupabaseClient, taskId: string): Promise<void> {
+    const { error } = await supabase.from("tasks").delete().eq("id", taskId);
+    if (error) throw error;
   },
 };
 

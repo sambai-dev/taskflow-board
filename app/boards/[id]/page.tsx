@@ -46,7 +46,7 @@ import { Label } from "@radix-ui/react-label"; // Form labels
 
 // --- Icons ---
 // Lucide React provides clean, consistent icons
-import { MoreHorizontal, Plus } from "lucide-react";
+import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
 
 // --- Data & State Management ---
 import { useBoard } from "@/lib/hooks/useBoards"; // Custom hook for board data
@@ -55,7 +55,7 @@ import { boardService } from "@/lib/services"; // API functions
 import { useSupabase } from "@/lib/supabase/SupabaseProvider"; // Database connection
 
 // --- React Hooks ---
-import { useParams } from "next/navigation"; // Get URL parameters
+import { useParams, useRouter } from "next/navigation"; // Get URL parameters
 import { useState, useRef } from "react"; // State and refs
 
 // --- Drag and Drop Library (@dnd-kit) ---
@@ -259,7 +259,13 @@ function DroppableColumn({
   );
 }
 
-function SortableTask({ task }: { task: Task }) {
+function SortableTask({
+  task,
+  onDelete,
+}: {
+  task: Task;
+  onDelete: (taskId: string) => void;
+}) {
   const {
     attributes,
     listeners,
@@ -294,14 +300,27 @@ function SortableTask({ task }: { task: Task }) {
   }
   return (
     <div ref={setNodeRef} {...attributes} {...listeners} style={styles}>
-      <Card className="cursor-pointer hover:shadow-md transition-shadow">
+      <Card className="cursor-pointer hover:shadow-md transition-shadow group">
         <CardContent className="p-3 sm:p-4">
           <div className="space-y-2 sm:space-y-3">
             {/* Task Header */}
-            <div className="flex items-start justify-between">
-              <h4 className="font-medium text-gray-900 text-sm leading-tight flex-1 min-w-0 pr-2">
+            <div className="flex items-start justify-between gap-2">
+              <h4 className="font-medium text-gray-900 text-sm leading-tight flex-1 min-w-0">
                 {task.title}
               </h4>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm("Are you sure you want to delete this task?")) {
+                    onDelete(task.id);
+                  }
+                }}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
             </div>
             {/* Task Description */}
             <p className="text-gray-600 text-xs line-clamp-2">
@@ -405,6 +424,7 @@ const customCollisionDetection: CollisionDetection = (args) => {
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { supabase } = useSupabase();
   const {
     board,
@@ -415,6 +435,9 @@ export default function BoardPage() {
     setColumns,
     moveTask,
     updateColumn,
+    deleteColumn,
+    deleteTask,
+    deleteBoard,
   } = useBoard(id);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -528,6 +551,41 @@ export default function BoardPage() {
         console.error("Failed to create task:", error);
         // A toast notification here
         alert("Failed to create task. Please try again.");
+      }
+    }
+  }
+
+  async function handleDeleteBoard() {
+    if (!board) return;
+    if (
+      confirm(
+        "Are you sure you want to delete this board? This action cannot be undone."
+      )
+    ) {
+      try {
+        await deleteBoard(board.id);
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Failed to delete board:", error);
+        alert("Failed to delete board. Please try again.");
+      }
+    }
+  }
+
+  async function handleDeleteColumnWrapper() {
+    if (!editingColumn) return;
+    if (
+      confirm(
+        "Are you sure you want to delete this column? All tasks in it will be deleted."
+      )
+    ) {
+      try {
+        await deleteColumn(editingColumn.id);
+        setIsEditingColumn(false);
+        setEditingColumn(null);
+      } catch (error) {
+        console.error("Failed to delete column:", error);
+        alert("Failed to delete column. Please try again.");
       }
     }
   }
@@ -780,15 +838,24 @@ export default function BoardPage() {
                   ))}
                 </div>
 
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-between items-center">
                   <Button
                     type="button"
-                    variant="outline"
-                    onClick={() => setIsEditingTitle(false)}
+                    variant="destructive"
+                    onClick={handleDeleteBoard}
                   >
-                    Cancel
+                    Delete Board
                   </Button>
-                  <Button type="submit">Save Changes</Button>
+                  <div className="flex space-x-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsEditingTitle(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save Changes</Button>
+                  </div>
                 </div>
               </div>
             </form>
@@ -1018,7 +1085,11 @@ export default function BoardPage() {
                   >
                     <div className="space-y-3">
                       {column.tasks.map((task, key) => (
-                        <SortableTask task={task} key={key} />
+                        <SortableTask
+                          task={task}
+                          key={key}
+                          onDelete={(taskId) => deleteTask(taskId, column.id)}
+                        />
                       ))}
                     </div>
                   </SortableContext>
@@ -1100,19 +1171,28 @@ export default function BoardPage() {
                 required
               />
             </div>
-            <div className="flex justify-end space-x-2">
+            <div className="flex justify-between items-center">
               <Button
                 type="button"
-                onClick={() => {
-                  setIsEditingColumn(false);
-                  setEditingColumnTitle("");
-                  setEditingColumn(null);
-                }}
-                variant="outline"
+                variant="destructive"
+                onClick={handleDeleteColumnWrapper}
               >
-                Cancel
+                Delete Column
               </Button>
-              <Button type="submit">Edit Column</Button>
+              <div className="flex space-x-2">
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setIsEditingColumn(false);
+                    setEditingColumnTitle("");
+                    setEditingColumn(null);
+                  }}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Edit Column</Button>
+              </div>
             </div>
           </form>
         </DialogContent>
