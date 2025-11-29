@@ -192,7 +192,6 @@ function DroppableColumn({
               <form
                 className="space-y-4"
                 onSubmit={async (e) => {
-                  e.preventDefault();
                   if (isCreating) return; // Prevent duplicate submissions
 
                   setIsCreating(true);
