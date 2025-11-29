@@ -86,6 +86,7 @@ export function useBoards() {
         taskCount: 0,
       };
       setBoards((prev) => [newBoardWithCount, ...prev]);
+      return newBoardWithCount;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create board.");
     }

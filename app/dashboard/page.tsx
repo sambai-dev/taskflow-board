@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Rocket } from "lucide-react";
 import { Grid3x3 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { CardHeader } from "@/components/ui/card";
@@ -36,6 +36,8 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [newBoardId, setNewBoardId] = useState<string | null>(null);
 
   const [filters, setFilters] = useState({
     search: "",
@@ -82,12 +84,32 @@ export default function DashboardPage() {
     });
   }
 
-  const handleCreateBoard = async () => {
+  const handleCreateBoard = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (isCreating) return;
+
     if (!canCreateBoard) {
       setShowUpgradeDialog(true);
       return;
     }
-    await createBoard({ title: "New Board" });
+    
+    try {
+      setIsCreating(true);
+      const newBoard = await createBoard({ title: "New Board" });
+      if (newBoard) {
+        setNewBoardId(newBoard.id);
+        // Clear highlight after 5 seconds
+        setTimeout(() => setNewBoardId(null), 5000);
+      }
+    } catch (error) {
+        console.error("Creation failed", error);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   if (loading) {
@@ -275,7 +297,18 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {filteredBoards.map((board: any, key) => (
                 <Link href={`/boards/${board.id}`} key={key}>
-                  <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+                  <Card 
+                    className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
+                      board.id === newBoardId 
+                        ? "ring-2 ring-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)] border-blue-300" 
+                        : ""
+                    }`}
+                  >
+                    {board.id === newBoardId && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <Badge className="bg-blue-500 text-white hover:bg-blue-600 shadow-sm animate-pulse">New</Badge>
+                      </div>
+                    )}
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <div className={`w-4 h-4 ${board.color} rounded`} />
@@ -323,7 +356,18 @@ export default function DashboardPage() {
               {filteredBoards.map((board: any, key) => (
                 <div key={key} className={key > 0 ? "mt-4" : undefined}>
                   <Link href={`/boards/${board.id}`}>
-                    <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+                    <Card 
+                      className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
+                        board.id === newBoardId 
+                          ? "ring-2 ring-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)] border-blue-300 transform translate-x-1" 
+                          : ""
+                      }`}
+                    >
+                      {board.id === newBoardId && (
+                        <div className="absolute top-2 right-2 z-10">
+                          <Badge className="bg-blue-500 text-white hover:bg-blue-600 shadow-sm animate-pulse">New</Badge>
+                        </div>
+                      )}
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div className={`w-4 h-4 ${board.color} rounded`} />
