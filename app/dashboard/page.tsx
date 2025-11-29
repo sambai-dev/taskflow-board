@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useBoards } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Filter, List, Loader2, Plus, Search, Trello, Activity, CheckSquare, Trash2 } from "lucide-react";
+import { Filter, List, Loader2, Plus, Search, Trello, Activity, CheckSquare, Trash2, Hand } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -151,9 +151,10 @@ export default function DashboardPage() {
 
       <main className="container mx-auto px-4 py-6 sm:px-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center flex-wrap gap-2">
             Welcome back,{" "}
-            {user?.firstName ?? user?.emailAddresses[0].emailAddress}! 👋
+            {user?.firstName ?? user?.emailAddresses[0].emailAddress}!
+            <Hand className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500" />
           </h1>
           <p className="text-gray-600">
             Here&apos;s what&apos;s happening with your boards today.
