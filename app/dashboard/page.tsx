@@ -369,7 +369,7 @@ export default function DashboardPage() {
               })}
 
               <Card
-                className="hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden flex flex-col h-full gap-0 items-center justify-center"
+                className="hover:shadow-lg cursor-pointer group relative overflow-hidden flex flex-col h-full gap-0 items-center justify-center"
                 onClick={() => setIsCreateDialogOpen(true)}
               >
                 <CardContent className="p-6 flex flex-col items-center justify-center text-center">
@@ -405,7 +405,7 @@ export default function DashboardPage() {
               })}
 
               <Card
-                className="mt-4 hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden flex flex-col h-full gap-0 items-center justify-center"
+                className="mt-4 hover:shadow-lg cursor-pointer group relative overflow-hidden flex flex-col h-full gap-0 items-center justify-center"
                 onClick={() => setIsCreateDialogOpen(true)}
               >
                 <CardContent className="p-6 flex flex-col items-center justify-center text-center">
