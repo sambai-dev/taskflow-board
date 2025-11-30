@@ -28,7 +28,7 @@ export const boardService = {
   async getBoardsWithTaskCount(
     supabase: SupabaseClient,
     userId: string
-  ): Promise<(Board & { taskCount: number })[]> {
+  ): Promise<(Board & { taskCount: number; columnCounts: { id: string; title: string; count: number }[] })[]> {
     // Step 1: Get all boards for the user
     const { data: boards, error: boardsError } = await supabase
       .from("boards")
@@ -42,56 +42,49 @@ export const boardService = {
     // Step 2: For each board, count tasks across all columns
     const boardsWithCounts = await Promise.all(
       boards.map(async (board) => {
-        // Get all columns for this board, then count tasks in those columns
+        // Get all columns for this board
         const { data: columns, error: columnsError } = await supabase
           .from("columns")
-          .select("id")
-          .eq("board_id", board.id);
+          .select("id, title")
+          .eq("board_id", board.id)
+          .order("sort_order", { ascending: true });
 
         if (columnsError) {
           console.error("Error fetching columns:", columnsError);
-          return { ...board, taskCount: 0 };
+          return { ...board, taskCount: 0, columnCounts: [] };
         }
 
         if (!columns || columns.length === 0) {
-          return { ...board, taskCount: 0 };
+          return { ...board, taskCount: 0, columnCounts: [] };
         }
 
-        // Count tasks in all columns for this board
-        // Filter out tasks that are in the "Done" column or completed
-        // We'll fetch all tasks to check their column title or status
-        // Since we don't have column names here easily without joining, 
-        // we'll fetch columns with their titles first.
-        
-        // Re-fetch columns with title
-        const { data: columnsWithTitle, error: colTitleError } = await supabase
-          .from("columns")
-          .select("id, title")
-          .eq("board_id", board.id);
+        const columnIds = columns.map(col => col.id);
 
-        if (colTitleError || !columnsWithTitle) {
-           return { ...board, taskCount: 0 };
-        }
-
-        const activeColumnIds = columnsWithTitle
-          .filter(col => col.title.toLowerCase() !== 'done')
-          .map(col => col.id);
-
-        if (activeColumnIds.length === 0) {
-           return { ...board, taskCount: 0 };
-        }
-
-        const { count, error: tasksError } = await supabase
+        // Get all tasks for these columns (lightweight fetch)
+        const { data: tasks, error: tasksError } = await supabase
           .from("tasks")
-          .select("*", { count: "exact", head: true })
-          .in("column_id", activeColumnIds);
+          .select("id, column_id")
+          .in("column_id", columnIds);
 
         if (tasksError) {
           console.error("Error counting tasks:", tasksError);
-          return { ...board, taskCount: 0 };
+          return { ...board, taskCount: 0, columnCounts: [] };
         }
 
-        return { ...board, taskCount: count || 0 };
+        // Calculate per-column counts
+        const columnCounts = columns.map(col => {
+            const count = tasks ? tasks.filter(t => t.column_id === col.id).length : 0;
+            return { id: col.id, title: col.title, count };
+        });
+
+        // Calculate total active task count (excluding "Done")
+        const activeTaskCount = columns.reduce((acc, col) => {
+            if (col.title.toLowerCase() === 'done') return acc;
+            const count = tasks ? tasks.filter(t => t.column_id === col.id).length : 0;
+            return acc + count;
+        }, 0);
+
+        return { ...board, taskCount: activeTaskCount, columnCounts };
       })
     );
 
@@ -205,6 +198,39 @@ export const boardService = {
 
     // 4. Delete the board
     const { error } = await supabase.from("boards").delete().eq("id", boardId);
+    if (error) throw error;
+  },
+
+  async bulkDeleteBoards(supabase: SupabaseClient, boardIds: string[]): Promise<void> {
+    if (boardIds.length === 0) return;
+
+    // 1. Get all columns for these boards
+    const { data: columns } = await supabase
+      .from("columns")
+      .select("id")
+      .in("board_id", boardIds);
+
+    if (columns && columns.length > 0) {
+      const columnIds = columns.map((col) => col.id);
+      // 2. Delete all tasks in these columns
+      const { error: tasksError } = await supabase
+        .from("tasks")
+        .delete()
+        .in("column_id", columnIds);
+
+      if (tasksError) throw tasksError;
+
+      // 3. Delete the columns
+      const { error: columnsError } = await supabase
+        .from("columns")
+        .delete()
+        .in("board_id", boardIds);
+
+      if (columnsError) throw columnsError;
+    }
+
+    // 4. Delete the boards
+    const { error } = await supabase.from("boards").delete().in("id", boardIds);
     if (error) throw error;
   },
 };

@@ -10,7 +10,11 @@ import { Board, ColumnWithTasks, Task } from "../supabase/models";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/SupabaseProvider";
 
-export type BoardWithTaskCount = Board & { taskCount: number };
+export type BoardWithTaskCount = Board & { 
+  taskCount: number;
+  columnCounts: { id: string; title: string; count: number }[];
+};
+
 
 export function useBoards() {
   const { user, isLoaded: isUserLoaded } = useUser();
@@ -108,6 +112,7 @@ export function useBoards() {
       const newBoardWithCount: BoardWithTaskCount = {
         ...newBoard,
         taskCount: 0,
+        columnCounts: [] // Default columns are created but we don't have their IDs here yet
       };
 
       // Insert the new board into the correct position (start of empty boards)
@@ -138,7 +143,19 @@ export function useBoards() {
     }
   }
 
-  return { boards, loading, error, createBoard, deleteBoard };
+  async function bulkDeleteBoards(boardIds: string[]) {
+    if (!user || !supabase) return;
+
+    try {
+      await boardService.bulkDeleteBoards(supabase, boardIds);
+      setBoards((prev) => prev.filter((b) => !boardIds.includes(b.id)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete boards.");
+      throw err;
+    }
+  }
+
+  return { boards, loading, error, createBoard, deleteBoard, bulkDeleteBoards };
 }
 
 export function useBoard(boardId: string) {

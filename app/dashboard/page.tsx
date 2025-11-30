@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useBoards } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Filter, List, Loader2, Plus, Search, Trello, Activity, CheckSquare, Trash2, Hand } from "lucide-react";
+import { Filter, List, Loader2, Plus, Search, Trello, Activity, CheckSquare, Trash2, Hand, Settings } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -363,6 +363,13 @@ export default function DashboardPage() {
                 Filter
               </Button>
 
+              <Link href="/dashboard/manage">
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Manage
+                </Button>
+              </Link>
+
               <Button onClick={() => setIsCreateDialogOpen(true)}>
                 <Plus />
                 Create Board
@@ -442,6 +449,28 @@ export default function DashboardPage() {
                           {new Date(board.updated_at).toLocaleDateString()}
                         </span>
                       </div>
+                      
+                      {/* Lists Summary */}
+                      <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                        <div className="space-y-1.5">
+                          {board.columnCounts?.slice(0, 3).map((col: any) => (
+                            <div key={col.id} className="flex justify-between items-center text-xs">
+                               <span className="text-gray-600 dark:text-gray-400 truncate max-w-[120px]">{col.title}</span>
+                               <span className={`font-medium ${col.count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
+                                 {col.count}
+                               </span>
+                            </div>
+                          ))}
+                          {(board.columnCounts?.length || 0) > 3 && (
+                             <div className="text-xs text-gray-400 pl-1 pt-1">
+                               + {(board.columnCounts?.length || 0) - 3} more lists
+                             </div>
+                          )}
+                          {(!board.columnCounts || board.columnCounts.length === 0) && (
+                             <div className="text-xs text-gray-400 italic">No lists created</div>
+                          )}
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
@@ -517,6 +546,28 @@ export default function DashboardPage() {
                             Updated{" "}
                             {new Date(board.updated_at).toLocaleDateString()}
                           </span>
+                        </div>
+                        
+                        {/* Lists Summary */}
+                        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                          <div className="space-y-1.5">
+                            {board.columnCounts?.slice(0, 3).map((col: any) => (
+                              <div key={col.id} className="flex justify-between items-center text-xs">
+                                 <span className="text-gray-600 dark:text-gray-400 truncate max-w-[120px]">{col.title}</span>
+                                 <span className={`font-medium ${col.count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
+                                   {col.count}
+                                 </span>
+                              </div>
+                            ))}
+                            {(board.columnCounts?.length || 0) > 3 && (
+                               <div className="text-xs text-gray-400 pl-1 pt-1">
+                                 + {(board.columnCounts?.length || 0) - 3} more lists
+                               </div>
+                            )}
+                            {(!board.columnCounts || board.columnCounts.length === 0) && (
+                               <div className="text-xs text-gray-400 italic">No lists created</div>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
