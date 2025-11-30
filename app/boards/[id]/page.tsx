@@ -323,6 +323,8 @@ function SortableTask({
         return "bg-gray-500";
     }
   }
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   return (
     <div ref={setNodeRef} {...attributes} {...listeners} style={styles}>
       <Card className="cursor-pointer hover:shadow-md transition-shadow group">
@@ -339,9 +341,7 @@ function SortableTask({
                 className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (confirm("Are you sure you want to delete this task?")) {
-                    onDelete(task.id);
-                  }
+                  setIsDeleteDialogOpen(true);
                 }}
               >
                 <Trash2 className="w-4 h-4" />
@@ -374,6 +374,49 @@ function SortableTask({
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onDelete(task.id);
+              setIsDeleteDialogOpen(false);
+            }
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Delete Task</DialogTitle>
+            <p className="text-sm text-gray-600">
+              Are you sure you want to delete this task? This action cannot be undone.
+            </p>
+          </DialogHeader>
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(task.id);
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
