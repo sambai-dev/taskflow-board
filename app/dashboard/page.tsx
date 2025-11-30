@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const [newBoardId, setNewBoardId] = useState<string | null>(null);
+          const [newBoardId, setNewBoardId] = useState<string | null>(null);
   
   const [boardToDelete, setBoardToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -45,6 +45,27 @@ export default function DashboardPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [newBoardTitle, setNewBoardTitle] = useState("");
   const [newBoardColor, setNewBoardColor] = useState("bg-blue-500");
+  
+  // Track new boards with their creation timestamp to handle animation
+  const [newBoardIds, setNewBoardIds] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setNewBoardIds(prev => {
+        const next = { ...prev };
+        let changed = false;
+        Object.entries(next).forEach(([id, timestamp]) => {
+          if (now - timestamp > 5000) {
+            delete next[id];
+            changed = true;
+          }
+        });
+        return changed ? next : prev;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const [filters, setFilters] = useState({
     search: "",
@@ -61,6 +82,52 @@ export default function DashboardPage() {
   // Free user can create the board if they have no boards
 
   const canCreateBoard = !isFreeUser || boards.length < 1;
+
+  function getBoardColorClasses(color: string) {
+    const colorMap: Record<string, { ring: string; shadow: string; border: string; badge: string; text: string; hover: string }> = {
+      "bg-blue-500": {
+        ring: "ring-blue-400",
+        shadow: "rgba(96,165,250,0.5)",
+        border: "border-blue-300",
+        badge: "bg-blue-500",
+        text: "text-blue-600",
+        hover: "hover:bg-blue-600",
+      },
+      "bg-green-500": {
+        ring: "ring-green-400",
+        shadow: "rgba(74,222,128,0.5)",
+        border: "border-green-300",
+        badge: "bg-green-500",
+        text: "text-green-600",
+        hover: "hover:bg-green-600",
+      },
+      "bg-orange-500": {
+        ring: "ring-orange-400",
+        shadow: "rgba(251,146,60,0.5)",
+        border: "border-orange-300",
+        badge: "bg-orange-500",
+        text: "text-orange-600",
+        hover: "hover:bg-orange-600",
+      },
+      "bg-purple-500": {
+        ring: "ring-purple-400",
+        shadow: "rgba(192,132,252,0.5)",
+        border: "border-purple-300",
+        badge: "bg-purple-500",
+        text: "text-purple-600",
+        hover: "hover:bg-purple-600",
+      },
+      "bg-red-500": {
+        ring: "ring-red-400",
+        shadow: "rgba(248,113,113,0.5)",
+        border: "border-red-300",
+        badge: "bg-red-500",
+        text: "text-red-600",
+        hover: "hover:bg-red-600",
+      },
+    };
+    return colorMap[color] || colorMap["bg-blue-500"];
+  }
 
   // boards from useBoards() now include taskCount from the database
   const filteredBoards = boards.filter((board: any) => {
@@ -113,12 +180,10 @@ export default function DashboardPage() {
         color: newBoardColor 
       });
       if (newBoard) {
-        setNewBoardId(newBoard.id);
+        setNewBoardIds(prev => ({ ...prev, [newBoard.id]: Date.now() }));
         setIsCreateDialogOpen(false);
         setNewBoardTitle("");
         setNewBoardColor("bg-blue-500");
-        // Clear highlight after 5 seconds
-        setTimeout(() => setNewBoardId(null), 5000);
       }
     } catch (error) {
         console.error("Creation failed", error);
@@ -322,21 +387,24 @@ export default function DashboardPage() {
             <div>No boards yet</div>
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {filteredBoards.map((board: any, key) => (
-                <Link href={`/boards/${board.id}`} key={key}>
-                  <Card 
-                    className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
-                      board.id === newBoardId 
-                        ? "ring-2 ring-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)] border-blue-300" 
-                        : ""
-                    }`}
-                  >
-                    {board.id === newBoardId && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <Badge className="bg-blue-500 text-white hover:bg-blue-600 shadow-sm animate-pulse">New</Badge>
-                      </div>
-                    )}
-                    <CardHeader className="pb-3">
+              {filteredBoards.map((board: any, key) => {
+                const colors = getBoardColorClasses(board.color);
+                const isNew = !!newBoardIds[board.id];
+                return (
+                  <Link href={`/boards/${board.id}`} key={key}>
+                    <Card 
+                      className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
+                        isNew
+                          ? `ring-2 ${colors.ring} shadow-[0_0_15px_${colors.shadow}] ${colors.border}` 
+                          : ""
+                      }`}
+                    >
+                      {isNew && (
+                        <div className="absolute top-2 right-2 z-10">
+                          <Badge className={`${colors.badge} text-white ${colors.hover} shadow-sm animate-pulse`}>New</Badge>
+                        </div>
+                      )}
+                      <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <div className={`w-4 h-4 ${board.color} rounded`} />
                         <Badge className="text-xs" variant="secondary">
@@ -377,7 +445,8 @@ export default function DashboardPage() {
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
+              );
+            })}
 
               <Card
                 className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors cursor-pointer group"
@@ -393,22 +462,25 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div>
-              {filteredBoards.map((board: any, key) => (
-                <div key={key} className={key > 0 ? "mt-4" : undefined}>
-                  <Link href={`/boards/${board.id}`}>
-                    <Card 
-                      className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
-                        board.id === newBoardId 
-                          ? "ring-2 ring-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)] border-blue-300 transform translate-x-1" 
-                          : ""
-                      }`}
-                    >
-                      {board.id === newBoardId && (
-                        <div className="absolute top-2 right-2 z-10">
-                          <Badge className="bg-blue-500 text-white hover:bg-blue-600 shadow-sm animate-pulse">New</Badge>
-                        </div>
-                      )}
-                      <CardHeader className="pb-3">
+              {filteredBoards.map((board: any, key) => {
+                const colors = getBoardColorClasses(board.color);
+                const isNew = !!newBoardIds[board.id];
+                return (
+                  <div key={key} className={key > 0 ? "mt-4" : undefined}>
+                    <Link href={`/boards/${board.id}`}>
+                      <Card 
+                        className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
+                          isNew
+                            ? `ring-2 ${colors.ring} shadow-[0_0_15px_${colors.shadow}] ${colors.border} transform translate-x-1` 
+                            : ""
+                        }`}
+                      >
+                        {isNew && (
+                          <div className="absolute top-2 right-2 z-10">
+                            <Badge className={`${colors.badge} text-white ${colors.hover} shadow-sm animate-pulse`}>New</Badge>
+                          </div>
+                        )}
+                        <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div className={`w-4 h-4 ${board.color} rounded`} />
                           <Badge className="text-xs" variant="secondary">
@@ -430,7 +502,7 @@ export default function DashboardPage() {
                         </div>
                       </CardHeader>
                       <CardContent className="p-4 sm:p-6">
-                        <CardTitle className="text-base sm:text-lg mb-2 group-hover:text-blue-600 transition-colors">
+                        <CardTitle className={`text-base sm:text-lg mb-2 group-hover:${colors.text} transition-colors`}>
                           {board.title}
                         </CardTitle>
                         <CardDescription className="text-sm mb-4">
@@ -450,7 +522,9 @@ export default function DashboardPage() {
                     </Card>
                   </Link>
                 </div>
-              ))}
+                );
+              })}
+
               <Card
                 className="mt-4 border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors cursor-pointer group"
                 onClick={() => setIsCreateDialogOpen(true)}
