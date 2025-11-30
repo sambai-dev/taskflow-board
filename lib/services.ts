@@ -58,11 +58,33 @@ export const boardService = {
         }
 
         // Count tasks in all columns for this board
-        const columnIds = columns.map((col) => col.id);
+        // Filter out tasks that are in the "Done" column or completed
+        // We'll fetch all tasks to check their column title or status
+        // Since we don't have column names here easily without joining, 
+        // we'll fetch columns with their titles first.
+        
+        // Re-fetch columns with title
+        const { data: columnsWithTitle, error: colTitleError } = await supabase
+          .from("columns")
+          .select("id, title")
+          .eq("board_id", board.id);
+
+        if (colTitleError || !columnsWithTitle) {
+           return { ...board, taskCount: 0 };
+        }
+
+        const activeColumnIds = columnsWithTitle
+          .filter(col => col.title.toLowerCase() !== 'done')
+          .map(col => col.id);
+
+        if (activeColumnIds.length === 0) {
+           return { ...board, taskCount: 0 };
+        }
+
         const { count, error: tasksError } = await supabase
           .from("tasks")
           .select("*", { count: "exact", head: true })
-          .in("column_id", columnIds);
+          .in("column_id", activeColumnIds);
 
         if (tasksError) {
           console.error("Error counting tasks:", tasksError);

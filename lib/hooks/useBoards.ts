@@ -46,7 +46,31 @@ export function useBoards() {
         supabase!,
         user.id
       );
-      setBoards(data);
+
+      // Apply sorting logic:
+      // 1. Incomplete task count (descending)
+      // 2. UpdatedAt/CreatedAt (newest first)
+      // 3. 0 tasks go to the end (but still sorted by date among themselves)
+      const sortedData = data.sort((a, b) => {
+        const countA = a.taskCount || 0;
+        const countB = b.taskCount || 0;
+
+        // If one has tasks and the other doesn't
+        if (countA > 0 && countB === 0) return -1;
+        if (countA === 0 && countB > 0) return 1;
+
+        // If both have tasks, sort by count descending
+        if (countA !== countB) {
+            return countB - countA;
+        }
+
+        // Tie-breaker (or if both have 0 tasks): Sort by most recent date
+        const dateA = new Date(a.updated_at || a.created_at).getTime();
+        const dateB = new Date(b.updated_at || b.created_at).getTime();
+        return dateB - dateA;
+      });
+
+      setBoards(sortedData);
     } catch (err) {
       console.error("loadBoards error:", err);
       const errorMessage =
@@ -85,7 +109,18 @@ export function useBoards() {
         ...newBoard,
         taskCount: 0,
       };
-      setBoards((prev) => [newBoardWithCount, ...prev]);
+
+      // Insert the new board into the correct position (start of empty boards)
+      // Since it has 0 tasks, it should go after all boards with >0 tasks,
+      // but before other 0-task boards (because it's the newest).
+      setBoards((prev) => {
+        const boardsWithTasks = prev.filter(b => (b.taskCount || 0) > 0);
+        const boardsWithoutTasks = prev.filter(b => (b.taskCount || 0) === 0);
+        
+        // New board goes at the start of the "without tasks" list
+        return [...boardsWithTasks, newBoardWithCount, ...boardsWithoutTasks];
+      });
+
       return newBoardWithCount;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create board.");
