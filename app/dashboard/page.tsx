@@ -2,25 +2,21 @@
 
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import { useBoards } from "@/lib/hooks/useBoards";
+import { useBoards, BoardWithTaskCount } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Filter, List, Loader2, Plus, Search, Trello, Activity, CheckSquare, Trash2, Hand, Settings } from "lucide-react";
+import { Filter, List, Loader2, Plus, Search, Hand, Settings, Trello, Rocket, CheckSquare, Activity } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardTitle,
 } from "@/components/ui/card";
-import { Rocket } from "lucide-react";
 import { Grid3x3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { CardHeader } from "@/components/ui/card";
 import Link from "next/link";
-import { Dialog } from "@radix-ui/react-dialog";
+import { BoardCard } from "@/components/BoardCard";
 import {
+  Dialog,
   DialogHeader,
   DialogContent,
   DialogTitle,
@@ -37,7 +33,6 @@ export default function DashboardPage() {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
-          const [newBoardId, setNewBoardId] = useState<string | null>(null);
   
   const [boardToDelete, setBoardToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -80,57 +75,10 @@ export default function DashboardPage() {
   });
 
   // Free user can create the board if they have no boards
-
   const canCreateBoard = !isFreeUser || boards.length < 1;
 
-  function getBoardColorClasses(color: string) {
-    const colorMap: Record<string, { ring: string; shadow: string; border: string; badge: string; text: string; hover: string }> = {
-      "bg-blue-500": {
-        ring: "ring-blue-400",
-        shadow: "rgba(96,165,250,0.5)",
-        border: "border-blue-300",
-        badge: "bg-blue-500",
-        text: "text-blue-600",
-        hover: "hover:bg-blue-600",
-      },
-      "bg-green-500": {
-        ring: "ring-green-400",
-        shadow: "rgba(74,222,128,0.5)",
-        border: "border-green-300",
-        badge: "bg-green-500",
-        text: "text-green-600",
-        hover: "hover:bg-green-600",
-      },
-      "bg-orange-500": {
-        ring: "ring-orange-400",
-        shadow: "rgba(251,146,60,0.5)",
-        border: "border-orange-300",
-        badge: "bg-orange-500",
-        text: "text-orange-600",
-        hover: "hover:bg-orange-600",
-      },
-      "bg-purple-500": {
-        ring: "ring-purple-400",
-        shadow: "rgba(192,132,252,0.5)",
-        border: "border-purple-300",
-        badge: "bg-purple-500",
-        text: "text-purple-600",
-        hover: "hover:bg-purple-600",
-      },
-      "bg-red-500": {
-        ring: "ring-red-400",
-        shadow: "rgba(248,113,113,0.5)",
-        border: "border-red-300",
-        badge: "bg-red-500",
-        text: "text-red-600",
-        hover: "hover:bg-red-600",
-      },
-    };
-    return colorMap[color] || colorMap["bg-blue-500"];
-  }
-
   // boards from useBoards() now include taskCount from the database
-  const filteredBoards = boards.filter((board: any) => {
+  const filteredBoards = boards.filter((board: BoardWithTaskCount) => {
     const matchesSearch = board.title
       .toLowerCase()
       .includes(filters.search.toLowerCase());
@@ -205,9 +153,9 @@ export default function DashboardPage() {
   };
 
   // Stats calculations
-  const totalTasks = boards.reduce((total: number, board: any) => total + (board.taskCount || 0), 0);
-  const activeBoards = boards.filter((board: any) => (board.taskCount || 0) > 0).length;
-  const recentActivity = boards.filter((board: any) => {
+  const totalTasks = boards.reduce((total: number, board: BoardWithTaskCount) => total + (board.taskCount || 0), 0);
+  const activeBoards = boards.filter((board: BoardWithTaskCount) => (board.taskCount || 0) > 0).length;
+  const recentActivity = boards.filter((board: BoardWithTaskCount) => {
     const updatedAt = new Date(board.updated_at);
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -394,88 +342,23 @@ export default function DashboardPage() {
             <div>No boards yet</div>
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {filteredBoards.map((board: any, key) => {
-                const colors = getBoardColorClasses(board.color);
+              {filteredBoards.map((board: BoardWithTaskCount, key) => {
                 const isNew = !!newBoardIds[board.id];
                 return (
                   <Link href={`/boards/${board.id}`} key={key}>
-                    <Card 
-                      className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
-                        isNew
-                          ? `ring-2 ${colors.ring} shadow-[0_0_15px_${colors.shadow}] ${colors.border}` 
-                          : ""
-                      }`}
-                    >
-                      {isNew && (
-                        <div className="absolute top-2 right-2 z-10">
-                          <Badge className={`${colors.badge} text-white ${colors.hover} shadow-sm animate-pulse`}>New</Badge>
-                        </div>
-                      )}
-                      <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className={`w-4 h-4 ${board.color} rounded`} />
-                        <Badge className="text-xs" variant="secondary">
-                          {board.taskCount || 0} tasks
-                        </Badge>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setBoardToDelete(board.id);
-                                setIsDeleteDialogOpen(true);
-                            }}
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-4 sm:p-6">
-                      <CardTitle className="text-base sm:text-lg mb-2 group-hover:text-blue-600 transition-colors">
-                        {board.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm mb-4">
-                        {board.description}
-                      </CardDescription>
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 space-y-1 sm:space-y-0">
-                        <span>
-                          Created{" "}
-                          {new Date(board.created_at).toLocaleDateString()}
-                        </span>
-                        <span>
-                          Updated{" "}
-                          {new Date(board.updated_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      {/* Lists Summary */}
-                      <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                        <div className="space-y-1.5">
-                          {board.columnCounts?.slice(0, 3).map((col: any) => (
-                            <div key={col.id} className="flex justify-between items-center text-xs">
-                               <span className="text-gray-600 dark:text-gray-400 truncate max-w-[120px]">{col.title}</span>
-                               <span className={`font-medium ${col.count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
-                                 {col.count}
-                               </span>
-                            </div>
-                          ))}
-                          {(board.columnCounts?.length || 0) > 3 && (
-                             <div className="text-xs text-gray-400 pl-1 pt-1">
-                               + {(board.columnCounts?.length || 0) - 3} more lists
-                             </div>
-                          )}
-                          {(!board.columnCounts || board.columnCounts.length === 0) && (
-                             <div className="text-xs text-gray-400 italic">No lists created</div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
+                    <BoardCard
+                      board={board}
+                      isNew={isNew}
+                      onDelete={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setBoardToDelete(board.id);
+                        setIsDeleteDialogOpen(true);
+                      }}
+                    />
+                  </Link>
+                );
+              })}
 
               <Card
                 className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors cursor-pointer group"
@@ -491,88 +374,23 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div>
-              {filteredBoards.map((board: any, key) => {
-                const colors = getBoardColorClasses(board.color);
+              {filteredBoards.map((board: BoardWithTaskCount, key) => {
                 const isNew = !!newBoardIds[board.id];
                 return (
                   <div key={key} className={key > 0 ? "mt-4" : undefined}>
                     <Link href={`/boards/${board.id}`}>
-                      <Card 
-                        className={`hover:shadow-lg transition-all duration-500 cursor-pointer group relative overflow-hidden ${
-                          isNew
-                            ? `ring-2 ${colors.ring} shadow-[0_0_15px_${colors.shadow}] ${colors.border} transform translate-x-1` 
-                            : ""
-                        }`}
-                      >
-                        {isNew && (
-                          <div className="absolute top-2 right-2 z-10">
-                            <Badge className={`${colors.badge} text-white ${colors.hover} shadow-sm animate-pulse`}>New</Badge>
-                          </div>
-                        )}
-                        <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <div className={`w-4 h-4 ${board.color} rounded`} />
-                          <Badge className="text-xs" variant="secondary">
-                            {board.taskCount || 0} tasks
-                          </Badge>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setBoardToDelete(board.id);
-                                setIsDeleteDialogOpen(true);
-                            }}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 sm:p-6">
-                        <CardTitle className={`text-base sm:text-lg mb-2 group-hover:${colors.text} transition-colors`}>
-                          {board.title}
-                        </CardTitle>
-                        <CardDescription className="text-sm mb-4">
-                          {board.description}
-                        </CardDescription>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 space-y-1 sm:space-y-0">
-                          <span>
-                            Created{" "}
-                            {new Date(board.created_at).toLocaleDateString()}
-                          </span>
-                          <span>
-                            Updated{" "}
-                            {new Date(board.updated_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        
-                        {/* Lists Summary */}
-                        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                          <div className="space-y-1.5">
-                            {board.columnCounts?.slice(0, 3).map((col: any) => (
-                              <div key={col.id} className="flex justify-between items-center text-xs">
-                                 <span className="text-gray-600 dark:text-gray-400 truncate max-w-[120px]">{col.title}</span>
-                                 <span className={`font-medium ${col.count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
-                                   {col.count}
-                                 </span>
-                              </div>
-                            ))}
-                            {(board.columnCounts?.length || 0) > 3 && (
-                               <div className="text-xs text-gray-400 pl-1 pt-1">
-                                 + {(board.columnCounts?.length || 0) - 3} more lists
-                               </div>
-                            )}
-                            {(!board.columnCounts || board.columnCounts.length === 0) && (
-                               <div className="text-xs text-gray-400 italic">No lists created</div>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </div>
+                      <BoardCard
+                        board={board}
+                        isNew={isNew}
+                        onDelete={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setBoardToDelete(board.id);
+                          setIsDeleteDialogOpen(true);
+                        }}
+                      />
+                    </Link>
+                  </div>
                 );
               })}
 

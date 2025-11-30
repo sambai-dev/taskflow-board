@@ -13,5 +13,9 @@ const hasProPlan = has({plan: "pro_user"});
 
 const hasEnterprisePlan = has({plan: "enterprise_user"});
 
-  return  <PlanProvider hasProPlan={hasProPlan} hasEnterprisePlan={hasEnterprisePlan} children={children}></PlanProvider>;
+  return (
+    <PlanProvider hasProPlan={hasProPlan} hasEnterprisePlan={hasEnterprisePlan}>
+      {children}
+    </PlanProvider>
+  );
 }

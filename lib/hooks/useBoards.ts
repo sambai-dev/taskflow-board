@@ -6,7 +6,7 @@ import {
   columnService,
 } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
-import { Board, ColumnWithTasks, Task } from "../supabase/models";
+import { Board, ColumnWithTasks } from "../supabase/models";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/SupabaseProvider";
 

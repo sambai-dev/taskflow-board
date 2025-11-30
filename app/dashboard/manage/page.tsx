@@ -2,9 +2,7 @@
 
 import Navbar from "@/components/navbar";
 import { useBoards } from "@/lib/hooks/useBoards";
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +15,6 @@ import {
   Calendar, 
   Activity,
   Layers,
-  MoreHorizontal,
   AlertTriangle,
   LayoutGrid,
   List
@@ -34,9 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function ManageBoardsPage() {
-  const { user } = useUser();
-  const { boards, loading, error, deleteBoard, bulkDeleteBoards } = useBoards();
-  const router = useRouter();
+  const { boards, loading, bulkDeleteBoards } = useBoards();
   
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { useSession } from "@clerk/nextjs";
 
@@ -19,10 +19,8 @@ export default function SupabaseProvider({
   children: React.ReactNode;
 }) {
   const { session } = useSession();
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // Memoize the Supabase client to prevent recreation on every render
-  // Only recreate when session ID changes, not on every session object update
   const supabase = useMemo(() => {
     if (!session) return null;
 
@@ -52,18 +50,10 @@ export default function SupabaseProvider({
     );
 
     return client;
-  }, [session?.id]); // Only recreate when session ID changes
-
-  useEffect(() => {
-    if (supabase) {
-      setIsLoaded(true);
-    } else {
-      setIsLoaded(false);
-    }
-  }, [supabase]);
+  }, [session]);
 
   return (
-    <Context.Provider value={{ supabase, isLoaded }}>
+    <Context.Provider value={{ supabase, isLoaded: !!supabase }}>
       {children}
     </Context.Provider>
   );

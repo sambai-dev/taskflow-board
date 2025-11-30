@@ -51,8 +51,6 @@ import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
 // --- Data & State Management ---
 import { useBoard } from "@/lib/hooks/useBoards"; // Custom hook for board data
 import { ColumnWithTasks, Task } from "@/lib/supabase/models"; // TypeScript types
-import { boardService } from "@/lib/services"; // API functions
-import { useSupabase } from "@/lib/supabase/SupabaseProvider"; // Database connection
 
 // --- React Hooks ---
 import { useParams, useRouter } from "next/navigation"; // Get URL parameters
@@ -74,7 +72,6 @@ import {
   TouchSensor, // Handles touch screen input
   pointerWithin,
   rectIntersection,
-  getFirstCollision,
   CollisionDetection,
 } from "@dnd-kit/core";
 
@@ -112,7 +109,13 @@ function DroppableColumn({
 }: {
   column: ColumnWithTasks;
   children: React.ReactNode;
-  onCreateTask: (columnId: string, taskData: any) => Promise<void>;
+  onCreateTask: (columnId: string, taskData: {
+    title: string;
+    description?: string;
+    assignee?: string;
+    dueDate?: string;
+    priority: "low" | "medium" | "high";
+  }) => Promise<void>;
   onEditColumn: (column: ColumnWithTasks) => void;
 }) {
   // DRAG-AND-DROP SETUP
@@ -192,11 +195,23 @@ function DroppableColumn({
               <form
                 className="space-y-4"
                 onSubmit={async (e) => {
+                  e.preventDefault();
                   if (isCreating) return; // Prevent duplicate submissions
+
+                  const formData = new FormData(e.currentTarget);
+                  const taskData = {
+                    title: formData.get("title") as string,
+                    description: (formData.get("description") as string) || undefined,
+                    assignee: (formData.get("assignee") as string) || undefined,
+                    dueDate: (formData.get("dueDate") as string) || undefined,
+                    priority: (formData.get("priority") as "low" | "medium" | "high") || "medium",
+                  };
+
+                  if (!taskData.title.trim()) return;
 
                   setIsCreating(true);
                   try {
-                    await onCreateTask(column.id, e);
+                    await onCreateTask(column.id, taskData);
                     setIsDialogOpen(false);
                   } catch (error) {
                     console.error("Failed to create task:", error);
@@ -493,7 +508,6 @@ const customCollisionDetection: CollisionDetection = (args) => {
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { supabase } = useSupabase();
   const {
     board,
     createColumn,
@@ -601,7 +615,7 @@ export default function BoardPage() {
     await createTask(columnId, taskData);
   }
 
-  async function handleCreateTask(columnId: string, e: any) {
+  async function handleCreateTask(columnId: string, e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const taskData = {
@@ -1136,7 +1150,7 @@ export default function BoardPage() {
                 <DroppableColumn
                   key={key}
                   column={column}
-                  onCreateTask={handleCreateTask}
+                  onCreateTask={createTaskWrapper}
                   onEditColumn={handleEditColumn}
                 >
                   <SortableContext
