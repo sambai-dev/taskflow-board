@@ -602,6 +602,7 @@ export default function DashboardPage() {
                     "bg-green-500",
                     "bg-orange-500",
                     "bg-purple-500",
+                    "bg-red-500"
                 ].map((color) => (
                   <button
                     key={color}
