@@ -1,3 +1,30 @@
+/**
+ * ============================================================================
+ * DASHBOARD PAGE
+ * ============================================================================
+ * 
+ * This is the main landing page for authenticated users.
+ * 
+ * KEY FEATURES:
+ * - Displays high-level statistics (Total Boards, Active Boards, Total Tasks, Recent Activity)
+ * - Lists all user boards with filtering and view options (Grid/List)
+ * - Provides access to create new boards
+ * - Handles "Free Plan" limits (e.g., max 1 board for free users)
+ * 
+ * COMPONENT STRUCTURE:
+ * - Header: Welcome message and user greeting
+ * - Stats Grid: 4 cards showing key metrics
+ * - Boards Section:
+ *   - Toolbar: View toggle, Filter, Manage button, Create button
+ *   - Search Bar: Real-time filtering by board title
+ *   - Content: Grid or List view of boards
+ * - Dialogs:
+ *   - Create Board: Form to create a new board
+ *   - Filter: Advanced filtering options (Date, Task Count)
+ *   - Upgrade: Upsell modal for free users hitting limits
+ *   - Delete: Confirmation for deleting a board
+ */
+
 "use client";
 
 import Navbar from "@/components/navbar";
@@ -25,25 +52,32 @@ import { Label } from "@/components/ui/label";
 import { usePlan } from "@/lib/contexts/PlanContext";
 
 export default function DashboardPage() {
-  const { user } = useUser();
-  const { createBoard, deleteBoard, boards, loading, error } = useBoards();
-  const router = useRouter();
-  const { isFreeUser } = usePlan();
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
-  const [isCreating, setIsCreating] = useState<boolean>(false);
+  // --- HOOKS & CONTEXT ---
+  const { user } = useUser(); // Clerk user data
+  const { createBoard, deleteBoard, boards, loading, error } = useBoards(); // Board data & actions
+  const router = useRouter(); // Navigation
+  const { isFreeUser } = usePlan(); // Plan status (Free vs Pro)
+
+  // --- LOCAL STATE ---
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid"); // Toggle view format
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false); // Filter modal visibility
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false); // Upgrade modal visibility
+  const [isCreating, setIsCreating] = useState<boolean>(false); // Creation loading state
   
+  // Delete State
   const [boardToDelete, setBoardToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   
+  // Create Dialog State
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [newBoardTitle, setNewBoardTitle] = useState("");
   const [newBoardColor, setNewBoardColor] = useState("bg-blue-500");
   
-  // Track new boards with their creation timestamp to handle animation
+  // Animation State: Track new boards to apply "new" badge/glow effect
   const [newBoardIds, setNewBoardIds] = useState<Record<string, number>>({});
 
+  // --- EFFECTS ---
+  // Cleanup "New" badges after 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -62,6 +96,7 @@ export default function DashboardPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // --- FILTERS ---
   const [filters, setFilters] = useState({
     search: "",
     dateRange: {
@@ -74,23 +109,32 @@ export default function DashboardPage() {
     },
   });
 
-  // Free user can create the board if they have no boards
+  // --- DERIVED STATE ---
+  
+  // Check if user can create more boards based on their plan
   const canCreateBoard = !isFreeUser || boards.length < 1;
 
-  // boards from useBoards() now include taskCount from the database
+  // Apply all active filters to the boards list
   const filteredBoards = boards.filter((board: BoardWithTaskCount) => {
+    // 1. Text Search
     const matchesSearch = board.title
       .toLowerCase()
       .includes(filters.search.toLowerCase());
 
+    // 2. Date Range Filter
     const matchesDateRange =
       (!filters.dateRange.start ||
         new Date(board.created_at) >= new Date(filters.dateRange.start)) &&
       (!filters.dateRange.end ||
         new Date(board.created_at) <= new Date(filters.dateRange.end));
+    
+    // Note: Task count filtering is set in state but not yet implemented in this filter function
+    // If needed, add: && (!filters.taskCount.min || board.taskCount >= filters.taskCount.min) ...
 
     return matchesSearch && matchesDateRange;
   });
+
+  // --- HANDLERS ---
 
   function clearFilters() {
     setFilters({
@@ -114,6 +158,7 @@ export default function DashboardPage() {
 
     if (isCreating) return;
 
+    // Check plan limits
     if (!canCreateBoard) {
       setShowUpgradeDialog(true);
       return;
@@ -128,6 +173,7 @@ export default function DashboardPage() {
         color: newBoardColor 
       });
       if (newBoard) {
+        // Mark as new to trigger animation
         setNewBoardIds(prev => ({ ...prev, [newBoard.id]: Date.now() }));
         setIsCreateDialogOpen(false);
         setNewBoardTitle("");
@@ -152,7 +198,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Stats calculations
+  // --- STATS CALCULATIONS ---
   const totalTasks = boards.reduce((total: number, board: BoardWithTaskCount) => {
     const boardTotal = board.columnCounts?.reduce((sum, col) => sum + col.count, 0) || 0;
     return total + boardTotal;
@@ -169,6 +215,8 @@ export default function DashboardPage() {
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     return updatedAt > oneWeekAgo;
   }).length;
+
+  // --- RENDER HELPERS ---
 
   if (loading) {
     return (
@@ -193,6 +241,7 @@ export default function DashboardPage() {
       <Navbar />
 
       <main className="container mx-auto px-4 py-6 sm:px-8">
+        {/* --- HEADER SECTION --- */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center flex-wrap gap-2">
             Welcome back,{" "}
@@ -204,7 +253,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Stats */}
+        {/* --- STATS CARDS --- */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-4 sm:p-6">
@@ -276,8 +325,9 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Boards */}
+        {/* --- BOARDS SECTION --- */}
         <div className="mb-6 sm:mb-8">
+          {/* Toolbar */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-4 sm:space-y-0">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -292,6 +342,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0 sm:space-x-4">
+              {/* View Toggles */}
               <div className="flex items-center space-x-2 rounded bg-white border p-1">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
@@ -332,7 +383,8 @@ export default function DashboardPage() {
               </Button>
             </div>
           </div>
-          {/* search board */}
+          
+          {/* Search Input */}
           <div className="relative mb-4 sm:mb-6">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
@@ -345,7 +397,7 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Boards Grid/List */}
+          {/* Boards Grid/List Content */}
           {boards.length === 0 ? (
             <div>No boards yet</div>
           ) : viewMode === "grid" ? (
@@ -368,6 +420,7 @@ export default function DashboardPage() {
                 );
               })}
 
+              {/* Create New Board Card (at end of grid) */}
               <Card
                 className="hover:shadow-lg cursor-pointer group relative overflow-hidden flex flex-col h-full gap-0 items-center justify-center"
                 onClick={() => setIsCreateDialogOpen(true)}
@@ -383,6 +436,7 @@ export default function DashboardPage() {
               </Card>
             </div>
           ) : (
+            // List View
             <div>
               {filteredBoards.map((board: BoardWithTaskCount, key) => {
                 const isNew = !!newBoardIds[board.id];
@@ -421,6 +475,8 @@ export default function DashboardPage() {
           )}
         </div>
       </main>
+
+      {/* --- DIALOGS --- */}
 
       {/* Filter Dialog */}
       <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
@@ -595,6 +651,7 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Upgrade Plan Dialog */}
       <Dialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog}>
         <DialogContent>
           <DialogHeader>
@@ -616,6 +673,7 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent
           onKeyDown={(e) => {
