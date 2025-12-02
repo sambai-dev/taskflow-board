@@ -585,7 +585,7 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <Trello className="h-8 w-8 text-blue-500" />
-                <span className="text-2xl font-bold">Trello Clone</span>
+                <span className="text-2xl font-bold">TaskFlow</span>
               </div>
               <p className="text-gray-400 max-w-md">
                 The modern visual workspace where teams plan, organize, and
@@ -637,7 +637,7 @@ export default function HomePage() {
           </div>
           <div className="border-t border-gray-800 pt-8">
             <p className="text-center text-gray-400 text-sm">
-              © {new Date().getFullYear()} Trello Clone. All rights reserved.
+              © {new Date().getFullYear()} TaskFlow. All rights reserved.
             </p>
           </div>
         </div>
