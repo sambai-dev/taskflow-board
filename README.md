@@ -1,6 +1,6 @@
 # TaskFlow Board - Task Management Board
 
-A modern, full-featured Trello clone built with Next.js, featuring a beautiful UI, real-time updates, and powerful task management capabilities. Create boards, organize tasks with drag-and-drop, collaborate with your team, and track progress—all in a sleek, responsive interface.
+A modern, full-featured project management application built with Next.js, featuring a beautiful UI, real-time updates, and powerful task management capabilities. Create boards, organize tasks with drag-and-drop, collaborate with your team, and track progress—all in a sleek, responsive interface.
 
 ![Project Status](https://img.shields.io/badge/status-active-success.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16.0.1-black)
@@ -21,7 +21,7 @@ A modern, full-featured Trello clone built with Next.js, featuring a beautiful U
 
 ## 🎯 Project Overview
 
-**TaskFlow Board** is a comprehensive project management application that replicates the core functionality of Trello while adding modern enhancements. Built with the latest web technologies, this application provides an intuitive interface for organizing tasks, managing boards, and tracking project progress.
+**TaskFlow Board** is a comprehensive project management application that delivers powerful project management capabilities with modern enhancements. Built with the latest web technologies, this application provides an intuitive interface for organizing tasks, managing boards, and tracking project progress.
 
 ### Key Capabilities
 
