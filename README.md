@@ -1,4 +1,4 @@
-# My Own Trello - Task Management Board
+# TaskFlow Board - Task Management Board
 
 A modern, full-featured Trello clone built with Next.js, featuring a beautiful UI, real-time updates, and powerful task management capabilities. Create boards, organize tasks with drag-and-drop, collaborate with your team, and track progress—all in a sleek, responsive interface.
 
@@ -21,7 +21,7 @@ A modern, full-featured Trello clone built with Next.js, featuring a beautiful U
 
 ## 🎯 Project Overview
 
-**My Own Trello** is a comprehensive project management application that replicates the core functionality of Trello while adding modern enhancements. Built with the latest web technologies, this application provides an intuitive interface for organizing tasks, managing boards, and tracking project progress.
+**TaskFlow Board** is a comprehensive project management application that replicates the core functionality of Trello while adding modern enhancements. Built with the latest web technologies, this application provides an intuitive interface for organizing tasks, managing boards, and tracking project progress.
 
 ### Key Capabilities
 
@@ -87,7 +87,7 @@ _Modern landing page featuring a clean design with feature showcase and call-to-
 ## 📁 Project Structure
 
 ```
-my-own-trello/
+taskflow-board/
 ├── my-app/                          # Next.js application root
 │   ├── app/                         # App router directory
 │   │   ├── boards/                  # Board-related pages
@@ -171,8 +171,8 @@ Before you begin, ensure you have the following installed:
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/Lime-oss-hash/my-own-trello.git
-cd my-own-trello/my-app
+git clone https://github.com/Lime-oss-hash/taskflow-board.git
+cd taskflow-board/my-app
 ```
 
 2. **Install dependencies**

@@ -39,7 +39,7 @@ import {
 
 /**
  * SECTION: HomePage Component
- * FUNCTION: Main landing page component for the Trello Clone application.
+ * FUNCTION: Main landing page component for the TaskFlow Board application.
  * INCLUDED: Hero section, features showcase, benefits, pricing teaser, CTA sections, and footer.
  */
 export default function HomePage() {

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Trello Clone - Modern Task Management",
+  title: "TaskFlow Board - Modern Task Management",
   description:
     "The visual workspace where teams plan, organize, and collaborate on any project. Simple, flexible, and powerful task management.",
 };

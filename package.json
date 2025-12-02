@@ -1,7 +1,11 @@
 {
-  "name": "my-app",
+  "name": "taskflow-board",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lime-oss-hash/taskflow-board.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
