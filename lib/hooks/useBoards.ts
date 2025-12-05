@@ -10,11 +10,10 @@ import { Board, ColumnWithTasks } from "../supabase/models";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/SupabaseProvider";
 
-export type BoardWithTaskCount = Board & { 
+export type BoardWithTaskCount = Board & {
   taskCount: number;
   columnCounts: { id: string; title: string; count: number }[];
 };
-
 
 export function useBoards() {
   const { user, isLoaded: isUserLoaded } = useUser();
@@ -65,7 +64,7 @@ export function useBoards() {
 
         // If both have tasks, sort by count descending
         if (countA !== countB) {
-            return countB - countA;
+          return countB - countA;
         }
 
         // Tie-breaker (or if both have 0 tasks): Sort by created date
@@ -112,16 +111,16 @@ export function useBoards() {
       const newBoardWithCount: BoardWithTaskCount = {
         ...newBoard,
         taskCount: 0,
-        columnCounts: [] // Default columns are created but we don't have their IDs here yet
+        columnCounts: [], // Default columns are created but we don't have their IDs here yet
       };
 
       // Insert the new board into the correct position (start of empty boards)
       // Since it has 0 tasks, it should go after all boards with >0 tasks,
       // but before other 0-task boards (because it's the newest).
       setBoards((prev) => {
-        const boardsWithTasks = prev.filter(b => (b.taskCount || 0) > 0);
-        const boardsWithoutTasks = prev.filter(b => (b.taskCount || 0) === 0);
-        
+        const boardsWithTasks = prev.filter((b) => (b.taskCount || 0) > 0);
+        const boardsWithoutTasks = prev.filter((b) => (b.taskCount || 0) === 0);
+
         // New board goes at the start of the "without tasks" list
         return [...boardsWithTasks, newBoardWithCount, ...boardsWithoutTasks];
       });
@@ -165,6 +164,19 @@ export function useBoard(boardId: string) {
   const [columns, setColumns] = useState<ColumnWithTasks[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Helper function to update the board's updated_at timestamp
+   * Called whenever tasks or columns are modified to keep the "last updated" date current
+   */
+  async function touchBoardTimestamp() {
+    if (!supabase || !boardId) return;
+    try {
+      await boardService.updateBoard(supabase, boardId, {});
+    } catch (err) {
+      console.error("Failed to update board timestamp:", err);
+    }
+  }
 
   // Load board data when boardId changes
   // Don't reload on every supabase object update
@@ -240,6 +252,9 @@ export function useBoard(boardId: string) {
             : col
         )
       );
+
+      // Update board's last updated timestamp
+      await touchBoardTimestamp();
 
       return newTask;
     } catch (err) {
@@ -321,6 +336,9 @@ export function useBoard(boardId: string) {
         console.log("Persisting task move updates:", updates.length);
         await taskService.updateTasksOrder(supabase!, updates);
         console.log("Task move persisted successfully");
+
+        // Update board's last updated timestamp
+        await touchBoardTimestamp();
       }
     } catch (err) {
       console.error("Failed to move task:", err);
@@ -341,6 +359,10 @@ export function useBoard(boardId: string) {
         user_id: user.id,
       });
       setColumns((prev) => [...prev, { ...newColumn, tasks: [] }]);
+
+      // Update board's last updated timestamp
+      await touchBoardTimestamp();
+
       return newColumn;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create column.");
@@ -359,6 +381,10 @@ export function useBoard(boardId: string) {
           col.id === columnId ? { ...col, ...updatedColumn } : col
         )
       );
+
+      // Update board's last updated timestamp
+      await touchBoardTimestamp();
+
       return updatedColumn;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update column.");
@@ -369,6 +395,9 @@ export function useBoard(boardId: string) {
     try {
       await columnService.deleteColumn(supabase!, columnId);
       setColumns((prev) => prev.filter((col) => col.id !== columnId));
+
+      // Update board's last updated timestamp
+      await touchBoardTimestamp();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete column.");
     }
@@ -387,6 +416,9 @@ export function useBoard(boardId: string) {
             : col
         )
       );
+
+      // Update board's last updated timestamp
+      await touchBoardTimestamp();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete task.");
     }
