@@ -7,18 +7,18 @@ A modern, full-featured project management application built with Next.js, featu
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Project Overview](#-project-overview)
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Dependencies](#-dependencies)
-- [Environment Variables](#-environment-variables)
-- [Contributing](#-contributing)
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Dependencies](#dependencies)
+- [Environment Variables](#environment-variables)
+- [Contributing](#contributing)
 
-## 🎯 Project Overview
+## Project Overview
 
 **TaskFlow Board** is a comprehensive project management application that delivers powerful project management capabilities with modern enhancements. Built with the latest web technologies, this application provides an intuitive interface for organizing tasks, managing boards, and tracking project progress.
 
@@ -33,36 +33,36 @@ A modern, full-featured project management application built with Next.js, featu
 - **Responsive Design**: Beautiful UI that works on desktop, tablet, and mobile
 - **Dashboard Analytics**: Track your boards and tasks at a glance
 
-## 📸 Screenshots
+## Screenshots
 
 ![Landing Page](landing_page.png)
 _Modern landing page featuring a clean design with feature showcase and call-to-action_
 
-## ✨ Features
+## Features
 
 ### Core Features
 
-- ✅ **User Authentication**
+- **User Authentication**
 
   - Sign up / Sign in with Clerk
   - Protected routes and user sessions
   - User profile management
 
-- ✅ **Board Management**
+- **Board Management**
 
   - Create, view, and edit boards
   - Custom board colors
   - Board descriptions
   - Archive/delete boards
 
-- ✅ **Column Organization**
+- **Column Organization**
 
   - Default columns: To Do, In Progress, Review, Done
   - Create custom columns
   - Edit column titles
   - Reorder columns
 
-- ✅ **Task Management**
+- **Task Management**
 
   - Create tasks with rich details
   - Add descriptions, assignees, and due dates
@@ -70,20 +70,20 @@ _Modern landing page featuring a clean design with feature showcase and call-to-
   - Drag and drop tasks within and across columns
   - Edit and delete tasks
 
-- ✅ **Dashboard**
+- **Dashboard**
 
   - Overview of all boards
   - Task count per board
   - Quick board access
   - Board filtering and search
 
-- ✅ **Modern UI/UX**
+- **Modern UI/UX**
   - Clean, intuitive interface
   - Smooth animations and transitions
   - Color-coded priority indicators
   - Responsive design for all devices
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 taskflow-board/
@@ -162,7 +162,7 @@ taskflow-board/
 | `components/navbar.tsx`    | Navigation component with authentication           |
 | `components/ui/*`          | Reusable UI components from shadcn/ui              |
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -393,7 +393,7 @@ pnpm dev
 
 Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
-## 💻 Usage
+## Usage
 
 ### Getting Started
 
@@ -459,7 +459,7 @@ Board View → Edit Board Icon → Update Details → Save Changes
 | `npm run start` | Start production server               |
 | `npm run lint`  | Run ESLint to check code quality      |
 
-## 🧪 Testing
+## Testing
 
 This project includes comprehensive test coverage using **Vitest** for unit/component tests and **Playwright** for E2E browser testing.
 
@@ -470,7 +470,7 @@ This project includes comprehensive test coverage using **Vitest** for unit/comp
 | `npm run test:coverage` | Generate test coverage report             |
 | `npm run test:watch`    | Run tests in watch mode                   |
 
-## 📦 Dependencies
+## Dependencies
 
 ### Core Dependencies
 
@@ -523,7 +523,7 @@ This project includes comprehensive test coverage using **Vitest** for unit/comp
 | **@tailwindcss/postcss** | ^4      | PostCSS for Tailwind         |
 | **tw-animate-css**       | ^1.4.0  | Tailwind animation utilities |
 
-## ⚙️ Environment Variables
+## Environment Variables
 
 The application requires the following environment variables to be configured in your `.env` file:
 
@@ -553,7 +553,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
 > **Note:** Never commit the `.env` file to version control. It's already included in `.gitignore`.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how you can help improve this project:
 
@@ -615,14 +615,14 @@ Contributions are welcome! Here's how you can help improve this project:
 
 ### Ideas for Contributions
 
-- 🎨 UI/UX improvements
-- 🐛 Bug fixes
-- ✨ New features (labels, attachments, comments)
-- 📝 Documentation improvements
-- 🧪 Test coverage
-- ♿ Accessibility enhancements
-- 🌐 Internationalization (i18n)
-- 📱 Mobile app version
+- UI/UX improvements
+- Bug fixes
+- New features (labels, attachments, comments)
+- Documentation improvements
+- Test coverage
+- Accessibility enhancements
+- Internationalization (i18n)
+- Mobile app version
 
 ### Reporting Issues
 
@@ -637,7 +637,7 @@ If you find a bug or have a feature request:
    - Screenshots (if applicable)
    - Environment details (OS, browser, Node version)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **[PedroTech](https://www.youtube.com/@PedroTechnologies)** - Initial project inspiration and learning resource ([Build a Fullstack Trello App](https://www.youtube.com/watch?v=ugxI1o5SyMs&t=24081s))
 - **Next.js** - The React framework for production
@@ -651,11 +651,11 @@ If you find a bug or have a feature request:
 
 ---
 
-## �️ Troubleshooting
+## Troubleshooting
 
 ### Common Issues and Solutions
 
-#### 🔐 Clerk Authentication Issues
+#### Clerk Authentication Issues
 
 **Problem: "Clerk is not defined" or authentication not working**
 
@@ -702,7 +702,7 @@ CLERK_WEBHOOK_SECRET=whsec_...
 
 ---
 
-#### 🗄️ Supabase Connection Issues
+#### Supabase Connection Issues
 
 **Problem: "Failed to fetch" or connection errors**
 
@@ -744,7 +744,7 @@ export const supabase = createClient(
 
 ---
 
-#### 🔒 Row Level Security (RLS) Policy Errors
+#### Row Level Security (RLS) Policy Errors
 
 **Problem: "permission denied" or unable to fetch data**
 
@@ -822,7 +822,7 @@ console.log("User ID:", user?.id); // Should match database user_id
 
 ---
 
-#### 🖱️ Drag and Drop Not Working
+#### Drag and Drop Not Working
 
 **Problem: Tasks won't drag or drop**
 
@@ -840,7 +840,7 @@ npm list @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
 
 ---
 
-#### 💾 Data Not Persisting
+#### Data Not Persisting
 
 **Problem: Changes made but not saved to database**
 
@@ -872,19 +872,19 @@ If you're still experiencing problems:
 
 ---
 
-## �📞 Support
+## Support
 
 If you need help or have questions:
 
-- 📧 Open an issue on GitHub
-- 💬 Start a discussion in the Discussions tab
-- 📖 Check the [Next.js documentation](https://nextjs.org/docs)
-- 🔍 Search existing issues and discussions
+- Open an issue on GitHub
+- Start a discussion in the Discussions tab
+- Check the [Next.js documentation](https://nextjs.org/docs)
+- Search existing issues and discussions
 
 ---
 
 © 2025 Sam Bai. All rights reserved.
 
-**Built with ❤️ by Sam Bai**
+**Built by Sam Bai**
 
-_Happy task managing! 🚀_
+_Happy task managing!_
