@@ -11,6 +11,8 @@ import { test, expect } from "@playwright/test";
  */
 
 test.describe("Authentication", () => {
+  // --- Public View Verification ---
+  // Confirms guest users see appropriate marketing/auth triggers
   test.describe("Landing Page", () => {
     test("displays sign-in button when not authenticated", async ({ page }) => {
       await page.goto("/");
@@ -49,6 +51,7 @@ test.describe("Authentication", () => {
     });
   });
 
+  // --- External Auth Redirects ---
   test.describe("Sign-In Flow", () => {
     test("redirects to Clerk sign-in page", async ({ page }) => {
       await page.goto("/");
@@ -71,6 +74,8 @@ test.describe("Authentication", () => {
     });
   });
 
+  // --- Route Guarding ---
+  // Ensures sensitive routes redirect to login
   test.describe("Protected Routes", () => {
     test("dashboard redirects unauthenticated users", async ({ page }) => {
       await page.goto("/dashboard");
@@ -88,6 +93,7 @@ test.describe("Authentication", () => {
   });
 });
 
+// --- Session Management (Mocked/Skipped) ---
 test.describe("Authenticated User Flow", () => {
   // This test.describe.configure allows setting up authenticated state
   // In real implementation, you'd use Clerk's testing utilities

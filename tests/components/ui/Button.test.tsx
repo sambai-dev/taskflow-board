@@ -3,7 +3,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Button Component Tests
+ *
+ * Verifies the UI library's Button component, including variants,
+ * sizes, states, and accessibility requirements.
+ */
+
 describe("Button", () => {
+  // --- Basic Rendering ---
   describe("Rendering", () => {
     it("renders with default variant and size", () => {
       render(<Button>Click me</Button>);
@@ -32,6 +40,8 @@ describe("Button", () => {
     });
   });
 
+  // --- Style Variants ---
+  // Confirms that correct Tailwind classes are applied for each variant
   describe("Variants", () => {
     it("applies default variant styles", () => {
       render(<Button variant="default">Default</Button>);
@@ -69,6 +79,8 @@ describe("Button", () => {
     });
   });
 
+  // --- Size Variations ---
+  // Confirms that correct height/padding classes are applied
   describe("Sizes", () => {
     it("applies default size", () => {
       render(<Button size="default">Default Size</Button>);
@@ -99,6 +111,7 @@ describe("Button", () => {
     });
   });
 
+  // --- Component States ---
   describe("States", () => {
     it("can be disabled", () => {
       render(<Button disabled>Disabled</Button>);
@@ -115,6 +128,7 @@ describe("Button", () => {
     });
   });
 
+  // --- Event Handling ---
   describe("Interactions", () => {
     it("calls onClick when clicked", async () => {
       const user = userEvent.setup();
@@ -153,6 +167,7 @@ describe("Button", () => {
     });
   });
 
+  // --- A11y & ARIA ---
   describe("Accessibility", () => {
     it("has correct button role", () => {
       render(<Button>Accessible Button</Button>);

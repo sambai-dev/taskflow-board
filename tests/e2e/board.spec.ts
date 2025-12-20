@@ -11,6 +11,7 @@ test.describe("Board Page", () => {
   // In production, set up authentication fixtures
   const testBoardId = "test-board-id"; // Replace with actual test board
 
+  // --- Visual Structure ---
   test.describe("Board Layout", () => {
     test.skip("displays board title", async ({ page }) => {
       await page.goto(`/boards/${testBoardId}`);
@@ -39,6 +40,7 @@ test.describe("Board Page", () => {
     });
   });
 
+  // --- Board Mutations ---
   test.describe("Task Creation", () => {
     test.skip("opens add task dialog", async ({ page }) => {
       await page.goto(`/boards/${testBoardId}`);
@@ -106,6 +108,7 @@ test.describe("Board Page", () => {
     });
   });
 
+  // --- Task Interaction ---
   test.describe("Task Management", () => {
     test.skip("shows task details on click", async ({ page }) => {
       await page.goto(`/boards/${testBoardId}`);
@@ -145,6 +148,7 @@ test.describe("Board Page", () => {
     });
   });
 
+  // --- Kanban Mechanics ---
   test.describe("Drag and Drop", () => {
     test.skip("can drag task between columns", async ({ page }) => {
       await page.goto(`/boards/${testBoardId}`);
@@ -187,6 +191,7 @@ test.describe("Board Page", () => {
     });
   });
 
+  // --- Schema Changes ---
   test.describe("Column Management", () => {
     test.skip("can add new column", async ({ page }) => {
       await page.goto(`/boards/${testBoardId}`);
@@ -222,6 +227,8 @@ test.describe("Board Page", () => {
   });
 });
 
+// --- Real-time Collaboration ---
+// Verifies and simulates multi-user sync using two browser contexts
 test.describe("Board Real-time Updates", () => {
   test.skip("reflects changes from other sessions", async ({ browser }) => {
     // Open two browser contexts (simulating two users/tabs)

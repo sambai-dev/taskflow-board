@@ -3,6 +3,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BoardCard } from "@/components/BoardCard";
 
+/**
+ * BoardCard Component Tests
+ *
+ * Tests the individual board cards shown in the dashboard, covering
+ * rendering, task count displays, and interactive elements.
+ */
+
+// --- Helpers & Mocks ---
+
 // Create a mock board that matches BoardWithTaskCount interface
 function createMockBoardWithTaskCount(overrides: Record<string, unknown> = {}) {
   return {
@@ -24,12 +33,14 @@ function createMockBoardWithTaskCount(overrides: Record<string, unknown> = {}) {
 }
 
 describe("BoardCard", () => {
+  // --- Setup ---
   const mockOnDelete = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  // --- Rendering Tests ---
   describe("Rendering", () => {
     it("renders board title", () => {
       const board = createMockBoardWithTaskCount({ title: "Project Board" });
@@ -71,6 +82,7 @@ describe("BoardCard", () => {
     });
   });
 
+  // --- Task & Column Count Tests ---
   describe("Column Counts", () => {
     it("displays column task counts", () => {
       const board = createMockBoardWithTaskCount({
@@ -116,6 +128,7 @@ describe("BoardCard", () => {
     });
   });
 
+  // --- Interactive Elements ---
   describe("Delete Button", () => {
     it("shows delete button when onDelete is provided", () => {
       const board = createMockBoardWithTaskCount();
@@ -165,6 +178,7 @@ describe("BoardCard", () => {
     });
   });
 
+  // --- Date & Time Formatting ---
   describe("Dates", () => {
     it("displays created date", () => {
       const board = createMockBoardWithTaskCount({
@@ -187,6 +201,7 @@ describe("BoardCard", () => {
     });
   });
 
+  // --- CSS & Styling ---
   describe("Styling", () => {
     it("applies hover and group classes for styling", () => {
       const board = createMockBoardWithTaskCount();

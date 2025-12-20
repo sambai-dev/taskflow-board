@@ -9,6 +9,8 @@ import AxeBuilder from "@axe-core/playwright";
  */
 
 test.describe("Accessibility Audits", () => {
+  // --- Landing Page Audit ---
+  // Runs a full Axe scan on the root page
   test.describe("Landing Page", () => {
     test("should not have any automatically detectable accessibility issues", async ({
       page,
@@ -121,6 +123,7 @@ test.describe("Accessibility Audits", () => {
     });
   });
 
+  // --- Interactive Elements Accessibility ---
   test.describe("Forms and Inputs", () => {
     test("form inputs should have labels", async ({ page }) => {
       await page.goto("/");
@@ -158,6 +161,8 @@ test.describe("Accessibility Audits", () => {
     });
   });
 
+  // --- Keyboard & Focus Management ---
+  // Ensures site is fully usable without a mouse
   test.describe("Keyboard Navigation", () => {
     test("should be navigable by keyboard", async ({ page }) => {
       await page.goto("/");
@@ -224,6 +229,7 @@ test.describe("Accessibility Audits", () => {
     });
   });
 
+  // --- Semantic Structure ---
   test.describe("ARIA Landmarks", () => {
     test("should have proper landmark structure", async ({ page }) => {
       await page.goto("/");
@@ -238,6 +244,7 @@ test.describe("Accessibility Audits", () => {
     });
   });
 
+  // --- Application Specific Audits ---
   test.describe("Dashboard Accessibility", () => {
     test.skip("dashboard should pass accessibility audit", async ({ page }) => {
       // Skip if requires authentication
@@ -252,6 +259,7 @@ test.describe("Accessibility Audits", () => {
     });
   });
 
+  // --- Visual Preferences ---
   test.describe("Motion and Animation", () => {
     test("should respect reduced motion preference", async ({ page }) => {
       await page.emulateMedia({ reducedMotion: "reduce" });

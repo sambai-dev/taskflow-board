@@ -11,6 +11,7 @@ test.describe("Dashboard Page", () => {
   // Skip authentication for now - in production, set up auth fixtures
   test.describe.configure({ mode: "serial" });
 
+  // --- Header & Navigation ---
   test.describe("UI Elements", () => {
     test.skip("displays dashboard header", async ({ page }) => {
       await page.goto("/dashboard");
@@ -43,6 +44,7 @@ test.describe("Dashboard Page", () => {
     });
   });
 
+  // --- Functional Flows ---
   test.describe("Board Creation", () => {
     test.skip("opens create board dialog", async ({ page }) => {
       await page.goto("/dashboard");
@@ -102,6 +104,7 @@ test.describe("Dashboard Page", () => {
     });
   });
 
+  // --- Search & Discovery ---
   test.describe("Board Search and Filter", () => {
     test.skip("filters boards by search query", async ({ page }) => {
       await page.goto("/dashboard");
@@ -127,6 +130,7 @@ test.describe("Dashboard Page", () => {
     });
   });
 
+  // --- Navigation & State ---
   test.describe("Board Navigation", () => {
     test.skip("navigates to board detail page", async ({ page }) => {
       await page.goto("/dashboard");
@@ -144,6 +148,7 @@ test.describe("Dashboard Page", () => {
     });
   });
 
+  // --- Batch Operations ---
   test.describe("Board Management", () => {
     test.skip("opens manage boards page", async ({ page }) => {
       await page.goto("/dashboard");
@@ -172,6 +177,7 @@ test.describe("Dashboard Page", () => {
   });
 });
 
+// --- Performance & UX SLIs ---
 test.describe("Dashboard Performance", () => {
   test("loads dashboard within acceptable time", async ({ page }) => {
     const startTime = Date.now();
