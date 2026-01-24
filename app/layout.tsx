@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SmoothScroll } from "@/lib/lenis";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,6 +61,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning
         >
+          <SmoothScroll />
           <SupabaseProvider>{children}</SupabaseProvider>
           <SpeedInsights />
         </body>
