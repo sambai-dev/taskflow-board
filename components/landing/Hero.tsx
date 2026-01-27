@@ -172,25 +172,25 @@ export function Hero() {
         {/* Floating Chips - Light Mode */}
         <FloatingBadge
           text="Merged PR #402"
-          icon={<GitCommitHorizontal className="w-4 h-4 text-purple-500" />}
+          icon={<GitCommitHorizontal className="w-4 h-4 text-slate-600" />}
           className="absolute -top-12 -left-4 md:left-10 md:-top-8 rotate-[-6deg]"
           delay={1}
         />
         <FloatingBadge
           text="Tests Passed (142/142)"
-          icon={<CheckCircle2 className="w-4 h-4 text-green-500" />}
+          icon={<CheckCircle2 className="w-4 h-4 text-blue-600" />}
           className="absolute -top-6 -right-4 md:right-20 md:-top-16 rotate-[4deg]"
           delay={1.5}
         />
 
         {/* Main Glassmorphic Container - Light Mode */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl ring-1 ring-gray-900/5 shadow-[0_50px_100px_-20px_rgba(50,50,93,0.15)] overflow-hidden transform-style-3d">
-          {/* Window Header */}
+          {/* Window Header - Monochrome */}
           <div className="flex items-center gap-4 px-4 py-3 border-b border-gray-200/50 bg-gray-50/80">
             <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-              <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-              <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+              <div className="w-3 h-3 rounded-full bg-slate-200" />
+              <div className="w-3 h-3 rounded-full bg-slate-200" />
+              <div className="w-3 h-3 rounded-full bg-slate-200" />
             </div>
             <div className="bg-white/50 px-3 py-1 rounded-md text-xs text-gray-400 font-mono flex-1 text-center border border-gray-200/50">
               taskflow.app
@@ -243,12 +243,12 @@ export function Hero() {
                 className="bg-white p-4 rounded-xl border-l-[3px] border-l-blue-500 border-y border-r border-gray-200/60 shadow-lg shadow-blue-900/5"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-md">
+                  <span className="text-[10px] uppercase font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
                     High
                   </span>
                   <div className="flex -space-x-1">
                     <div className="w-5 h-5 rounded-full bg-blue-100 border border-white"></div>
-                    <div className="w-5 h-5 rounded-full bg-green-100 border border-white"></div>
+                    <div className="w-5 h-5 rounded-full bg-slate-100 border border-white"></div>
                   </div>
                 </div>
                 <p className="text-gray-900 text-sm font-medium mb-4">
@@ -264,15 +264,15 @@ export function Hero() {
             {/* Column 3: Done */}
             <div className="bg-gray-100/40 rounded-xl p-4 flex flex-col gap-3 hidden md:flex">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-green-600 font-semibold text-sm">
+                <span className="text-slate-600 font-semibold text-sm">
                   Done
                 </span>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">
                   12
                 </span>
               </div>
               <div className="bg-white/60 p-4 rounded-xl border border-gray-200/40">
-                <div className="flex items-center gap-2 text-green-600 mb-2">
+                <div className="flex items-center gap-2 text-slate-500 mb-2">
                   <CheckCircle2 className="w-4 h-4" />
                   <span className="text-xs font-medium">Completed</span>
                 </div>

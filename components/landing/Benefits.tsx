@@ -9,19 +9,19 @@ const benefits = [
     icon: Target,
     title: "Stay Focused",
     description:
-      "Clear visual organization helps you prioritize what matters most.",
+      "Opinionated Kanban for engineering work: statuses, priorities, and fields tuned for real dev workflows.",
   },
   {
     icon: Rocket,
     title: "Move Faster",
     description:
-      "Streamlined workflows mean you spend less time managing and more time doing.",
+      "Snappy board interactions with Next.js App Router and optimistic UI.",
   },
   {
     icon: Sparkles,
     title: "Work Smarter",
     description:
-      "Powerful features that adapt to your workflow, not the other way around.",
+      "Typed API layer, schema validation, and 106+ passing tests keep the board reliable as features evolve.",
   },
 ];
 
@@ -33,11 +33,11 @@ export function Benefits() {
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <h2 className={`${typography.h2} mb-6 text-gray-900`}>
-          Why Teams Love TaskFlow
+          Why Engineers Love TaskFlow
         </h2>
         <p className="text-xl text-gray-600 mb-20 max-w-2xl mx-auto">
-          Join thousands of teams who have transformed their workflow with our
-          simple, powerful tools.
+          Built as a production-ready portfolio project – fully typed, tested,
+          and deployed with modern tooling.
         </p>
 
         <div className="grid md:grid-cols-3 gap-12">
