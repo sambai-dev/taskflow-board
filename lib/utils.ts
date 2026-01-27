@@ -1,64 +1,8 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function getBoardColorClasses(color: string) {
-  const colorMap: Record<
-    string,
-    {
-      ring: string;
-      shadow: string;
-      border: string;
-      badge: string;
-      text: string;
-      hover: string;
-    }
-  > = {
-    "bg-blue-500": {
-      ring: "ring-blue-400",
-      shadow: "rgba(96,165,250,0.5)",
-      border: "border-blue-300",
-      badge: "bg-blue-500",
-      text: "text-blue-600",
-      hover: "hover:bg-blue-600",
-    },
-    "bg-green-500": {
-      ring: "ring-green-400",
-      shadow: "rgba(74,222,128,0.5)",
-      border: "border-green-300",
-      badge: "bg-green-500",
-      text: "text-green-600",
-      hover: "hover:bg-green-600",
-    },
-    "bg-orange-500": {
-      ring: "ring-orange-400",
-      shadow: "rgba(251,146,60,0.5)",
-      border: "border-orange-300",
-      badge: "bg-orange-500",
-      text: "text-orange-600",
-      hover: "hover:bg-orange-600",
-    },
-    "bg-purple-500": {
-      ring: "ring-purple-400",
-      shadow: "rgba(192,132,252,0.5)",
-      border: "border-purple-300",
-      badge: "bg-purple-500",
-      text: "text-purple-600",
-      hover: "hover:bg-purple-600",
-    },
-    "bg-red-500": {
-      ring: "ring-red-400",
-      shadow: "rgba(248,113,113,0.5)",
-      border: "border-red-300",
-      badge: "bg-red-500",
-      text: "text-red-600",
-      hover: "hover:bg-red-600",
-    },
-  };
-  return colorMap[color] || colorMap["bg-blue-500"];
 }
 
 export function getRelativeTime(dateString: string) {
@@ -66,12 +10,80 @@ export function getRelativeTime(dateString: string) {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return "just now";
+  if (diffInSeconds < 60) return "Just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
   if (diffInSeconds < 604800)
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
   return date.toLocaleDateString();
+}
+
+export function formatDate(dateString: string) {
+  return getRelativeTime(dateString);
+}
+
+export function getBoardColorClasses(color: string) {
+  const colors: Record<
+    string,
+    {
+      ring: string;
+      shadow: string;
+      border: string;
+      badge: string;
+      hover: string;
+      text: string;
+    }
+  > = {
+    blue: {
+      ring: "ring-blue-200",
+      shadow: "blue-500/20",
+      border: "border-blue-200",
+      badge: "bg-blue-600",
+      hover: "hover:bg-blue-700",
+      text: "text-blue-600",
+    },
+    green: {
+      ring: "ring-green-200",
+      shadow: "green-500/20",
+      border: "border-green-200",
+      badge: "bg-green-600",
+      hover: "hover:bg-green-700",
+      text: "text-green-600",
+    },
+    purple: {
+      ring: "ring-purple-200",
+      shadow: "purple-500/20",
+      border: "border-purple-200",
+      badge: "bg-purple-600",
+      hover: "hover:bg-purple-700",
+      text: "text-purple-600",
+    },
+    orange: {
+      ring: "ring-orange-200",
+      shadow: "orange-500/20",
+      border: "border-orange-200",
+      badge: "bg-orange-600",
+      hover: "hover:bg-orange-700",
+      text: "text-orange-600",
+    },
+    pink: {
+      ring: "ring-pink-200",
+      shadow: "pink-500/20",
+      border: "border-pink-200",
+      badge: "bg-pink-600",
+      hover: "hover:bg-pink-700",
+      text: "text-pink-600",
+    },
+    gray: {
+      ring: "ring-gray-200",
+      shadow: "gray-500/20",
+      border: "border-gray-200",
+      badge: "bg-gray-600",
+      hover: "hover:bg-gray-700",
+      text: "text-gray-600",
+    },
+  };
+  return colors[color] || colors.gray;
 }
 
 /**
@@ -86,7 +98,9 @@ export function getPriorityColor(priority: "low" | "medium" | "high"): string {
   return colors[priority] ?? "bg-gray-500";
 }
 
-export function sortBoards(boards: any[]) {
+export function sortBoards<
+  T extends { taskCount?: number; created_at: string },
+>(boards: T[]): T[] {
   return boards.sort((a, b) => {
     const countA = a.taskCount || 0;
     const countB = b.taskCount || 0;

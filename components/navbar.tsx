@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * SECTION: Props Interface
@@ -150,11 +150,11 @@ export default function Navbar({
    * INCLUDED: Logo, Sign In/Sign Up buttons (if signed out), or Dashboard link/UserButton (if signed in).
    */
   return (
-    <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Trello className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-          <span className="text-xl sm:text-2xl font-bold text-gray-900">
+          <span className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
             TaskFlow
           </span>
         </div>
@@ -170,13 +170,13 @@ export default function Navbar({
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <span className="hidden sm:inline text-sm text-gray-600">
-                  Welcome,{" "}
-                  {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress}
-                </span>
                 <Link href="/">
-                  <Button size="sm" className="text-xs sm:text-sm">
-                    Dashboard <ArrowRight />
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  >
+                    Dashboard
                   </Button>
                 </Link>
                 <UserButton afterSignOutUrl="/" />
@@ -188,13 +188,13 @@ export default function Navbar({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs sm:text-sm"
+                  className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 >
                   Sign In
                 </Button>
               </SignInButton>
               <SignUpButton>
-                <Button size="sm" className="text-xs sm:text-sm">
+                <Button className="bg-gray-900 text-white hover:bg-black rounded-lg font-bold shadow-sm transition-all">
                   Sign Up
                 </Button>
               </SignUpButton>

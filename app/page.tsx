@@ -1,16 +1,16 @@
+import { LandingAuthCheck } from "@/components/auth/LandingAuthCheck";
+import { LandingButtons } from "@/components/landing/LandingButtons";
+import Navbar from "@/components/navbar";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, ChevronRight, Trello } from "lucide-react";
+import Link from "next/link";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SignUpButton } from "@clerk/nextjs";
+import { typography } from "@/lib/design-tokens";
 import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { Benefits } from "@/components/landing/Benefits";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Navbar from "@/components/navbar";
-import { SignUpButton } from "@clerk/nextjs"; // Keep for buttons, but remove hooks
-import { LandingAuthCheck } from "@/components/auth/LandingAuthCheck";
-import { LandingButtons } from "@/components/landing/LandingButtons";
-import { CheckCircle2, Trello } from "lucide-react";
-import { typography } from "@/lib/design-tokens";
 
 export default function HomePage() {
   return (
@@ -23,7 +23,10 @@ export default function HomePage() {
       <Benefits />
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-24" id="pricing">
+      <section
+        className="container mx-auto px-4 py-24 border-t border-gray-100"
+        id="pricing"
+      >
         <div className="text-center mb-16">
           <h2 className={`${typography.h2} text-gray-900 mb-4`}>
             Simple, Transparent Pricing
@@ -35,7 +38,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Free Plan */}
-          <Card className="border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
+          <Card className="bg-white border-gray-200 text-gray-900 shadow-sm hover:shadow-lg transition-all duration-300">
             <CardContent className="p-8">
               <CardTitle className="text-2xl mb-2 font-bold text-gray-900">
                 Free
@@ -70,9 +73,9 @@ export default function HomePage() {
           </Card>
 
           {/* Pro Plan */}
-          <Card className="border-2 border-blue-600 shadow-xl relative scale-105 z-10">
+          <Card className="bg-white border-blue-200 shadow-xl relative scale-105 z-10">
             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <Badge className="bg-blue-600 text-white px-4 py-1 hover:bg-blue-700">
+              <Badge className="bg-blue-600 text-white px-4 py-1 hover:bg-blue-700 border-none">
                 Most Popular
               </Badge>
             </div>
@@ -100,7 +103,7 @@ export default function HomePage() {
               </ul>
               <SignUpButton mode="modal">
                 <Button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200/50"
                   size="lg"
                 >
                   Start Pro Trial
@@ -110,7 +113,7 @@ export default function HomePage() {
           </Card>
 
           {/* Enterprise Plan */}
-          <Card className="border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
+          <Card className="bg-white border-gray-200 text-gray-900 shadow-sm hover:shadow-lg transition-all duration-300">
             <CardContent className="p-8">
               <CardTitle className="text-2xl mb-2 font-bold text-gray-900">
                 Enterprise
@@ -149,9 +152,9 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-24">
         <div className="bg-blue-600 rounded-3xl p-12 sm:p-20 text-center text-white relative overflow-hidden">
           {/* Background decoration */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10">
-            <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl" />
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-500 rounded-full blur-[100px]" />
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-400 rounded-full blur-[100px]" />
           </div>
 
           <div className="relative z-10 max-w-3xl mx-auto">
@@ -181,14 +184,19 @@ export default function HomePage() {
                   TaskFlow
                 </span>
               </div>
-              <p className="text-gray-500 max-w-sm leading-relaxed">
-                The visual workspace where teams plan, organize, and collaborate
-                on any project.
-              </p>
             </div>
+
             <div>
-              <h3 className="font-bold text-gray-900 mb-6">Product</h3>
+              <h3 className="font-bold text-gray-900 mb-6">Company</h3>
               <ul className="space-y-4">
+                <li>
+                  <Link
+                    href="#"
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    Enterprise
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href="#pricing"
@@ -199,35 +207,42 @@ export default function HomePage() {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard"
+                    href="#"
                     className="hover:text-blue-600 transition-colors"
                   >
-                    Dashboard
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    Terms of Service
                   </Link>
                 </li>
               </ul>
             </div>
+
             <div>
-              <h3 className="font-bold text-gray-900 mb-6">Company</h3>
+              <h3 className="font-bold text-gray-900 mb-6">Resources</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="hover:text-blue-600 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600 transition-colors">
-                    Contact
-                  </a>
+                  <Link
+                    href="#"
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    Docs
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+
+          <div className="border-t border-gray-200 pt-8 flex flex-col items-center justify-center gap-4 text-center">
             <p className="text-sm text-gray-500">
               © {new Date().getFullYear()} TaskFlow. All rights reserved.
             </p>
-            <div className="flex gap-6">{/* Social icons could go here */}</div>
           </div>
         </div>
       </footer>
