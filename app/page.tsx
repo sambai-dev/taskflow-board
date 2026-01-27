@@ -11,6 +11,7 @@ import { typography } from "@/lib/design-tokens";
 import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { Benefits } from "@/components/landing/Benefits";
+import { SystemStatus } from "@/components/landing/SystemStatus";
 
 export default function HomePage() {
   return (
@@ -149,7 +150,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="container mx-auto px-4 py-24">
+      <section className="container mx-auto px-4 pt-24 pb-32">
         <div className="bg-blue-600 rounded-3xl p-12 sm:p-20 text-center text-white relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
@@ -172,18 +173,36 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 text-gray-600 py-16 border-t border-gray-200">
-        <div className="container mx-auto px-4">
+      <footer className="bg-gray-50 text-gray-600 py-16 border-t border-gray-200 relative overflow-hidden">
+        {/* Subtle Footer Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="bg-blue-600 p-1.5 rounded-lg">
-                  <Trello className="h-6 w-6 text-white" />
+            <div className="md:col-span-1">
+              <Link
+                href="/"
+                className="inline-block hover:opacity-80 transition-opacity"
+              >
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="bg-blue-600 p-1.5 rounded-lg">
+                    <Trello className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="text-2xl font-bold text-gray-900">
+                    TaskFlow
+                  </span>
                 </div>
-                <span className="text-2xl font-bold text-gray-900">
-                  TaskFlow
-                </span>
-              </div>
+              </Link>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                The modern task management platform for developer teams.
+              </p>
             </div>
 
             <div>
@@ -192,7 +211,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="#"
-                    className="hover:text-blue-600 transition-colors"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Enterprise
                   </Link>
@@ -200,7 +219,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="#pricing"
-                    className="hover:text-blue-600 transition-colors"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Pricing
                   </Link>
@@ -208,7 +227,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="#"
-                    className="hover:text-blue-600 transition-colors"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Privacy Policy
                   </Link>
@@ -216,7 +235,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="#"
-                    className="hover:text-blue-600 transition-colors"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Terms of Service
                   </Link>
@@ -230,12 +249,17 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="#"
-                    className="hover:text-blue-600 transition-colors"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Docs
                   </Link>
                 </li>
               </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-gray-900 mb-6">Status</h3>
+              <SystemStatus />
             </div>
           </div>
 

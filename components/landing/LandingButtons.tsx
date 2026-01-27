@@ -34,7 +34,7 @@ export function LandingButtons() {
       <Link href="/dashboard">
         <Button
           size="lg"
-          className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-10 py-6 h-auto font-semibold shadow-xl border-none hover:scale-105 transition-all duration-200"
+          className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-10 py-6 h-auto font-semibold shadow-xl border-none hover:scale-105 transition-all duration-200"
         >
           Go to Dashboard
           <ArrowRight className="ml-2 h-5 w-5" />

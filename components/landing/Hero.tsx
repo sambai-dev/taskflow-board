@@ -61,8 +61,8 @@ export function Hero() {
           className="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-sm text-blue-800 pointer-events-none shadow-sm"
         >
           <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-          <span className="font-semibold">2,847</span> teams shipped faster this
-          week
+          <span className="font-semibold">v0.1.0</span> - Now open for early
+          access
         </motion.div>
 
         <motion.h1
