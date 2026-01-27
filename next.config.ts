@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
 
   // Image optimization - use WebP format for smaller file sizes
   images: {
-    formats: ["image/webp"],
+    formats: ["image/avif", "image/webp"],
   },
 
   // Enable gzip compression for faster transfers

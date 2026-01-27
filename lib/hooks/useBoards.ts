@@ -9,17 +9,18 @@ import { useUser } from "@clerk/nextjs";
 import { Board, ColumnWithTasks } from "../supabase/models";
 import { useEffect, useState } from "react";
 import { useSupabase } from "../supabase/SupabaseProvider";
+import { sortBoards } from "../utils";
 
 export type BoardWithTaskCount = Board & {
   taskCount: number;
   columnCounts: { id: string; title: string; count: number }[];
 };
 
-export function useBoards() {
+export function useBoards(initialData?: BoardWithTaskCount[]) {
   const { user, isLoaded: isUserLoaded } = useUser();
   const { supabase } = useSupabase();
-  const [boards, setBoards] = useState<BoardWithTaskCount[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [boards, setBoards] = useState<BoardWithTaskCount[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   // Load boards when user is authenticated
@@ -32,7 +33,7 @@ export function useBoards() {
       return;
     }
 
-    if (user && supabase) {
+    if (user && supabase && !initialData) {
       loadBoards();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,31 +48,14 @@ export function useBoards() {
       // Use the new method that fetches boards with task counts
       const data = await boardService.getBoardsWithTaskCount(
         supabase!,
-        user.id
+        user.id,
       );
 
       // Apply sorting logic:
       // 1. Total task count (descending)
       // 2. Created Date (descending) for tie-breaker
       // 3. 0 tasks go to the end (naturally handled by count descending, but explicit check ensures grouping)
-      const sortedData = data.sort((a, b) => {
-        const countA = a.taskCount || 0;
-        const countB = b.taskCount || 0;
-
-        // If one has tasks and the other doesn't
-        if (countA > 0 && countB === 0) return -1;
-        if (countA === 0 && countB > 0) return 1;
-
-        // If both have tasks, sort by count descending
-        if (countA !== countB) {
-          return countB - countA;
-        }
-
-        // Tie-breaker (or if both have 0 tasks): Sort by created date
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
-        return dateB - dateA;
-      });
+      const sortedData = sortBoards(data);
 
       setBoards(sortedData);
     } catch (err) {
@@ -80,8 +64,8 @@ export function useBoards() {
         err instanceof Error
           ? err.message
           : typeof err === "object"
-          ? JSON.stringify(err)
-          : String(err);
+            ? JSON.stringify(err)
+            : String(err);
       setError(errorMessage || "Failed to load boards.");
     } finally {
       setLoading(false);
@@ -105,7 +89,7 @@ export function useBoards() {
         {
           ...boardData,
           userId: user.id,
-        }
+        },
       );
       // Initialize taskCount to 0 for the new board
       const newBoardWithCount: BoardWithTaskCount = {
@@ -209,7 +193,7 @@ export function useBoard(boardId: string) {
           console.log("Real-time task change:", payload.eventType);
           // Refresh the board data when tasks change
           loadBoard();
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -222,7 +206,7 @@ export function useBoard(boardId: string) {
           console.log("Real-time column change:", payload.eventType);
           // Refresh the board data when columns change
           loadBoard();
-        }
+        },
       )
       .subscribe((status) => {
         console.log("Real-time subscription status:", status);
@@ -243,7 +227,7 @@ export function useBoard(boardId: string) {
       setError(null);
       const data = await boardDataService.getBoardWithColumns(
         supabase!,
-        boardId
+        boardId,
       );
       setBoard(data.board);
       setColumns(data.columnsWithTasks);
@@ -259,7 +243,7 @@ export function useBoard(boardId: string) {
       const updatedBoard = await boardService.updateBoard(
         supabase!,
         boardId,
-        updates
+        updates,
       );
       setBoard(updatedBoard);
       return updatedBoard;
@@ -276,7 +260,7 @@ export function useBoard(boardId: string) {
       assignee?: string;
       dueDate?: string;
       priority: "low" | "medium" | "high";
-    }
+    },
   ) {
     try {
       const newTask = await boardService.createTask(supabase!, {
@@ -297,8 +281,8 @@ export function useBoard(boardId: string) {
                 ...col,
                 tasks: [...col.tasks, newTask],
               }
-            : col
-        )
+            : col,
+        ),
       );
 
       // Update board's last updated timestamp
@@ -313,7 +297,7 @@ export function useBoard(boardId: string) {
   async function moveTask(
     taskId: string,
     newColumnId: string,
-    newOrder: number
+    newOrder: number,
   ) {
     const previousColumns = columns;
 
@@ -422,12 +406,12 @@ export function useBoard(boardId: string) {
       const updatedColumn = await columnService.updateColumnTitle(
         supabase!,
         columnId,
-        title
+        title,
       );
       setColumns((prev) =>
         prev.map((col) =>
-          col.id === columnId ? { ...col, ...updatedColumn } : col
-        )
+          col.id === columnId ? { ...col, ...updatedColumn } : col,
+        ),
       );
 
       // Update board's last updated timestamp
@@ -461,8 +445,8 @@ export function useBoard(boardId: string) {
                 ...col,
                 tasks: col.tasks.filter((task) => task.id !== taskId),
               }
-            : col
-        )
+            : col,
+        ),
       );
 
       // Update board's last updated timestamp

@@ -85,3 +85,24 @@ export function getPriorityColor(priority: "low" | "medium" | "high"): string {
   };
   return colors[priority] ?? "bg-gray-500";
 }
+
+export function sortBoards(boards: any[]) {
+  return boards.sort((a, b) => {
+    const countA = a.taskCount || 0;
+    const countB = b.taskCount || 0;
+
+    // If one has tasks and the other doesn't
+    if (countA > 0 && countB === 0) return -1;
+    if (countA === 0 && countB > 0) return 1;
+
+    // If both have tasks, sort by count descending
+    if (countA !== countB) {
+      return countB - countA;
+    }
+
+    // Tie-breaker (or if both have 0 tasks): Sort by created date
+    const dateA = new Date(a.created_at).getTime();
+    const dateB = new Date(b.created_at).getTime();
+    return dateB - dateA;
+  });
+}

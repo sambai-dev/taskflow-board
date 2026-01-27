@@ -1,39 +1,21 @@
-'use client';
-
 import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { Benefits } from "@/components/landing/Benefits";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/navbar";
-import { useUser, SignUpButton } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import {
-  CheckCircle2,
-  ArrowRight,
-  Trello,
-} from "lucide-react";
+import { SignUpButton } from "@clerk/nextjs"; // Keep for buttons, but remove hooks
+import { LandingAuthCheck } from "@/components/auth/LandingAuthCheck";
+import { LandingButtons } from "@/components/landing/LandingButtons";
+import { CheckCircle2, Trello } from "lucide-react";
 import { typography } from "@/lib/design-tokens";
 
 export default function HomePage() {
-  const { isSignedIn } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isSignedIn) {
-      router.push("/dashboard");
-    }
-  }, [isSignedIn, router]);
-
   return (
     <div className="min-h-screen bg-white selection:bg-blue-100 selection:text-blue-900">
+      <LandingAuthCheck />
       <Navbar />
 
       <Hero />
@@ -55,7 +37,9 @@ export default function HomePage() {
           {/* Free Plan */}
           <Card className="border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
             <CardContent className="p-8">
-              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">Free</CardTitle>
+              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">
+                Free
+              </CardTitle>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900">$0</span>
                 <span className="text-gray-600">/month</span>
@@ -75,9 +59,12 @@ export default function HomePage() {
                 </li>
               </ul>
               <SignUpButton mode="modal">
-                 <Button className="w-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200" size="lg">
-                    Get Started
-                 </Button>
+                <Button
+                  className="w-full bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200"
+                  size="lg"
+                >
+                  Get Started
+                </Button>
               </SignUpButton>
             </CardContent>
           </Card>
@@ -90,7 +77,9 @@ export default function HomePage() {
               </Badge>
             </div>
             <CardContent className="p-8">
-              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">Pro</CardTitle>
+              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">
+                Pro
+              </CardTitle>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900">$4.99</span>
                 <span className="text-gray-600">/month</span>
@@ -109,10 +98,13 @@ export default function HomePage() {
                   <span className="text-gray-600">Priority Support</span>
                 </li>
               </ul>
-               <SignUpButton mode="modal">
-                 <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200" size="lg">
-                    Start Pro Trial
-                 </Button>
+              <SignUpButton mode="modal">
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
+                  size="lg"
+                >
+                  Start Pro Trial
+                </Button>
               </SignUpButton>
             </CardContent>
           </Card>
@@ -120,7 +112,9 @@ export default function HomePage() {
           {/* Enterprise Plan */}
           <Card className="border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
             <CardContent className="p-8">
-              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">Enterprise</CardTitle>
+              <CardTitle className="text-2xl mb-2 font-bold text-gray-900">
+                Enterprise
+              </CardTitle>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900">$19.99</span>
                 <span className="text-gray-600">/month</span>
@@ -139,7 +133,11 @@ export default function HomePage() {
                   <span className="text-gray-600">Dedicated Support</span>
                 </li>
               </ul>
-              <Button variant="outline" className="w-full border-gray-200 text-gray-900 hover:bg-gray-50" size="lg">
+              <Button
+                variant="outline"
+                className="w-full border-gray-200 text-gray-900 hover:bg-gray-50"
+                size="lg"
+              >
                 Contact Sales
               </Button>
             </CardContent>
@@ -150,11 +148,11 @@ export default function HomePage() {
       {/* Final CTA */}
       <section className="container mx-auto px-4 py-24">
         <div className="bg-blue-600 rounded-3xl p-12 sm:p-20 text-center text-white relative overflow-hidden">
-           {/* Background decoration */}
-           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10">
-              <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl" />
-              <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl" />
-           </div>
+          {/* Background decoration */}
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10">
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl" />
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl" />
+          </div>
 
           <div className="relative z-10 max-w-3xl mx-auto">
             <h2 className={`${typography.h2} mb-6 text-white`}>
@@ -164,27 +162,8 @@ export default function HomePage() {
               Join thousands of teams who have already revolutionized the way
               they work. Start free today.
             </p>
-            {isSignedIn ? (
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-10 py-6 h-auto font-semibold shadow-xl border-none"
-                >
-                  Go to Dashboard
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            ) : (
-              <SignUpButton mode="modal">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-10 py-6 h-auto font-semibold shadow-xl border-none"
-                >
-                  Get Started for Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </SignUpButton>
-            )}
+            {/* Client-side buttons to allow SSG for the page */}
+            <LandingButtons />
           </div>
         </div>
       </section>
@@ -196,25 +175,33 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-6">
                 <div className="bg-blue-600 p-1.5 rounded-lg">
-                    <Trello className="h-6 w-6 text-white" />
+                  <Trello className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-2xl font-bold text-gray-900">TaskFlow</span>
+                <span className="text-2xl font-bold text-gray-900">
+                  TaskFlow
+                </span>
               </div>
               <p className="text-gray-500 max-w-sm leading-relaxed">
-                The visual workspace where teams plan, organize, and
-                collaborate on any project.
+                The visual workspace where teams plan, organize, and collaborate
+                on any project.
               </p>
             </div>
             <div>
               <h3 className="font-bold text-gray-900 mb-6">Product</h3>
               <ul className="space-y-4">
                 <li>
-                  <Link href="#pricing" className="hover:text-blue-600 transition-colors">
+                  <Link
+                    href="#pricing"
+                    className="hover:text-blue-600 transition-colors"
+                  >
                     Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link href="/dashboard" className="hover:text-blue-600 transition-colors">
+                  <Link
+                    href="/dashboard"
+                    className="hover:text-blue-600 transition-colors"
+                  >
                     Dashboard
                   </Link>
                 </li>
@@ -240,9 +227,7 @@ export default function HomePage() {
             <p className="text-sm text-gray-500">
               © {new Date().getFullYear()} TaskFlow. All rights reserved.
             </p>
-            <div className="flex gap-6">
-                {/* Social icons could go here */}
-            </div>
+            <div className="flex gap-6">{/* Social icons could go here */}</div>
           </div>
         </div>
       </footer>
