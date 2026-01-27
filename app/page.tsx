@@ -163,8 +163,8 @@ export default function HomePage() {
               Ready to Ship Faster?
             </h2>
             <p className="text-xl text-blue-100 mb-10">
-              Join thousands of teams who have already revolutionized the way
-              they work. Start free today.
+              See how TaskFlow can streamline your development workflow. Start
+              free today - no credit card required.
             </p>
             {/* Client-side buttons to allow SSG for the page */}
             <LandingButtons />
@@ -252,6 +252,16 @@ export default function HomePage() {
                     className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
                   >
                     Docs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="https://github.com/sambai-dev/taskflow-board"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-blue-600 hover:translate-x-1 transition-all inline-block"
+                  >
+                    View on GitHub
                   </Link>
                 </li>
               </ul>

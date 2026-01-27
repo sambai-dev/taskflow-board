@@ -25,28 +25,20 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden pt-32 pb-20 bg-slate-50"
+      className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden pt-36 pb-20 bg-white"
     >
       {/* --- BACKGROUND LAYERS --- */}
 
-      {/* 1. Base Gradient: Dynamic Indigo-Slate-Cyan Blend */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%),
-            conic-gradient(from 0deg at 50% 50%, #eff6ff 0deg, #f0fdfa 120deg, #f5f3ff 240deg, #eff6ff 360deg)
-          `,
-          opacity: 0.8,
-        }}
-      />
+      {/* 1. Flat White Base (No Gradient) - Vanta Style */}
+      {/* Grid Pattern Only */}
 
-      {/* 2. Noise Overlay for Texture */}
+      {/* Subtle Grid Pattern for Technical Feel */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          transform: "translateZ(0)",
+          backgroundImage:
+            "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
       />
 
@@ -56,25 +48,25 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[140%] max-w-[1200px] h-[800px] opacity-[0.4] grayscale blur-[2px]"
+          className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[140%] max-w-[1200px] h-[800px] opacity-[0.2] grayscale blur-[1px]"
           style={{
             transform: "perspective(1000px) rotateX(20deg) rotateY(0deg)",
             maskImage:
               "linear-gradient(to bottom, transparent, black 10%, black 80%, transparent)",
           }}
         >
-          {/* Abstract Columns - Light Borders */}
+          {/* Abstract Columns - Slate Borders */}
           <div className="grid grid-cols-3 gap-8 h-full">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="border-x border-gray-200/40 h-full flex flex-col gap-6 p-4"
+                className="border-x border-slate-100 h-full flex flex-col gap-6 p-4"
               >
-                {/* Fake Cards - Light */}
+                {/* Fake Cards - Slate */}
                 {[1, 2, 3, 4].map((j) => (
                   <div
                     key={j}
-                    className="h-32 rounded-xl border border-gray-200/40 bg-white/20"
+                    className="h-32 rounded-xl border border-slate-100 bg-slate-50/50"
                   />
                 ))}
               </div>
@@ -86,28 +78,28 @@ export function Hero() {
       {/* --- FOREGROUND CONTENT --- */}
 
       <div className="relative z-10 flex flex-col items-center max-w-5xl mx-auto text-center">
-        {/* Version Badge - Glassmorphic Pill */}
+        {/* Version Badge - Clean White/Gray (No Lavender) */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/50 border border-blue-100/50 backdrop-blur-sm shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] text-sm text-gray-600 ring-1 ring-black/5"
+          className="mb-8 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-sm text-slate-600"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
           </span>
-          <span className="font-semibold text-gray-900">v0.1.1</span>
-          <span className="w-px h-3 bg-gray-300 mx-1" />
-          <span className="text-gray-500">Designed for speed</span>
+          <span className="font-semibold text-slate-900">v0.1.1</span>
+          <span className="w-px h-3 bg-slate-200 mx-1" />
+          <span className="text-slate-500">TaskFlow Board</span>
         </motion.div>
 
         <motion.h1
           {...animation.fadeIn}
-          className="text-6xl md:text-8xl font-bold tracking-tighter text-gray-900 mb-8 leading-[1.1] md:leading-[1.05]"
+          className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-950 mb-8 leading-[1.1] md:leading-[1.05]"
         >
           Ship{" "}
-          <span className="text-blue-600/90 relative inline-block">
+          <span className="text-blue-600 relative inline-block">
             2x faster
             {/* Dynamic Underline */}
             <svg
@@ -130,7 +122,7 @@ export function Hero() {
         <motion.p
           {...animation.fadeIn}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-xl md:text-2xl text-gray-500 max-w-2xl mb-12 leading-relaxed"
+          className="text-xl md:text-2xl text-slate-600 max-w-2xl mb-12 leading-relaxed"
         >
           The Kanban board that speaks your language. Syncs with git, automates
           your chores, and gets out of your way.
@@ -141,11 +133,11 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 items-center relative z-20"
         >
-          {/* Main CTA - Premium Hover (Scale + Shadow) */}
+          {/* Main CTA - Brand Blue (Active Anchor) */}
           <div className="relative z-20">
             <SignedIn>
               <Link href="/dashboard">
-                <button className="group relative px-8 py-4 bg-gray-900 text-white rounded-lg font-bold text-lg flex items-center gap-2 shadow-xl hover:shadow-2xl hover:bg-gray-800 transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] ring-1 ring-gray-900/10">
+                <button className="group relative px-8 py-4 bg-blue-600 text-white rounded-lg font-bold text-lg flex items-center gap-2 shadow-xl shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30 hover:bg-blue-500 transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
                   Go to Dashboard
                   <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
@@ -153,7 +145,7 @@ export function Hero() {
             </SignedIn>
             <SignedOut>
               <SignUpButton mode="modal">
-                <button className="group relative px-8 py-4 bg-gray-900 text-white rounded-lg font-bold text-lg flex items-center gap-2 shadow-xl hover:shadow-2xl hover:bg-gray-800 transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] ring-1 ring-gray-900/10">
+                <button className="group relative px-8 py-4 bg-blue-600 text-white rounded-lg font-bold text-lg flex items-center gap-2 shadow-xl shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30 hover:bg-blue-500 transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]">
                   Start Building - Free
                   <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
@@ -163,7 +155,7 @@ export function Hero() {
 
           <Link
             href="/pricing"
-            className="flex items-center gap-2 px-8 py-4 text-gray-500 font-medium text-lg hover:text-gray-900 transition-colors"
+            className="flex items-center gap-2 px-8 py-4 text-slate-500 font-medium text-lg hover:text-slate-900 transition-colors"
           >
             See plans
           </Link>
