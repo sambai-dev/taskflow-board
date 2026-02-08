@@ -28,7 +28,7 @@ import { useUser } from "@clerk/nextjs";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { boardDataService } from "@/lib/services";
 import { useRouter } from "next/navigation";
-import { Board } from "@/lib/supabase/models";
+import { Board, TaskWithBoardInfo } from "@/lib/supabase/models";
 
 interface TopBarProps {
   title?: string;
@@ -36,8 +36,7 @@ interface TopBarProps {
 
 interface SearchResults {
   boards: Board[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tasks: any[];
+  tasks: TaskWithBoardInfo[];
 }
 
 export function TopBar({ title = "Dashboard" }: TopBarProps) {
@@ -104,13 +103,16 @@ export function TopBar({ title = "Dashboard" }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <span className="hover:text-gray-900 cursor-pointer transition-colors">
-          Workspace
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-2 text-sm text-gray-500"
+      >
+        <span>Workspace</span>
+        <ChevronRight className="h-4 w-4" aria-hidden="true" />
+        <span className="font-semibold text-gray-900" aria-current="page">
+          {title}
         </span>
-        <ChevronRight className="h-4 w-4" />
-        <span className="font-semibold text-gray-900">{title}</span>
-      </div>
+      </nav>
 
       {/* Search & Actions */}
       <div className="flex items-center gap-4">

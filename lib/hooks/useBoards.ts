@@ -77,9 +77,7 @@ export function useBoards(initialData?: BoardWithTaskCount[]) {
     description?: string;
     color?: string;
   }) {
-    console.log("createBoard called", { user: !!user, supabase: !!supabase });
     if (!user || !supabase) {
-      console.error("User or Supabase missing", { user, supabase });
       throw new Error("User not authenticated or Supabase not initialized");
     }
 
@@ -190,7 +188,6 @@ export function useBoard(boardId: string) {
           table: "tasks",
         },
         (payload) => {
-          console.log("Real-time task change:", payload.eventType);
           // Refresh the board data when tasks change
           loadBoard();
         },
@@ -203,14 +200,11 @@ export function useBoard(boardId: string) {
           table: "columns",
         },
         (payload) => {
-          console.log("Real-time column change:", payload.eventType);
           // Refresh the board data when columns change
           loadBoard();
         },
       )
-      .subscribe((status) => {
-        console.log("Real-time subscription status:", status);
-      });
+      .subscribe();
 
     // Cleanup: unsubscribe when component unmounts or boardId changes
     return () => {
@@ -365,9 +359,7 @@ export function useBoard(boardId: string) {
 
       // 2. Persist to Supabase
       if (updates.length > 0) {
-        console.log("Persisting task move updates:", updates.length);
         await taskService.updateTasksOrder(supabase!, updates);
-        console.log("Task move persisted successfully");
 
         // Update board's last updated timestamp
         await touchBoardTimestamp();

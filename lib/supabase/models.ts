@@ -33,3 +33,39 @@ export interface Task {
   created_at: string;
   updated_at: string;
 }
+
+/**
+ * Types for Supabase join results
+ * These represent the shape of data returned from nested select queries
+ */
+
+// Board info nested in column join
+export interface BoardJoinResult {
+  id: string;
+  title: string;
+  user_id: string;
+}
+
+// Column with nested board join
+export interface ColumnWithBoardJoin {
+  title: string;
+  board_id: string;
+  boards: BoardJoinResult | BoardJoinResult[];
+}
+
+// Task with full column and board join (for search/recent tasks)
+export interface TaskWithJoins extends Task {
+  columns: ColumnWithBoardJoin | ColumnWithBoardJoin[];
+}
+
+// Flattened task with board info (after processing joins)
+export interface TaskWithBoardInfo extends Task {
+  board_title: string;
+  board_id: string;
+}
+
+export interface TaskWithFullBoardInfo extends Task {
+  board_title: string;
+  column_title: string;
+  board_id: string;
+}

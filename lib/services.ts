@@ -1,4 +1,12 @@
-import { Column, Board, Task } from "@/lib/supabase/models";
+import {
+  Column,
+  Board,
+  Task,
+  TaskWithJoins,
+  TaskWithBoardInfo,
+  TaskWithFullBoardInfo,
+  ColumnWithBoardJoin,
+} from "@/lib/supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const boardService = {
@@ -112,7 +120,6 @@ export const boardService = {
     supabase: SupabaseClient,
     board: Omit<Board, "id" | "created_at" | "updated_at">,
   ): Promise<Board> {
-    console.log("Creating board with data:", board);
     const { data, error } = await supabase
       .from("boards")
       .insert(board)
@@ -123,7 +130,6 @@ export const boardService = {
       console.error("Error creating board:", error);
       throw error;
     }
-    console.log("Board created successfully:", data);
     return data;
   },
 
@@ -402,17 +408,23 @@ export const taskService = {
 
     if (error) throw error;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (data || []).map((task: any) => {
-      const col = Array.isArray(task.columns) ? task.columns[0] : task.columns;
-      const board = Array.isArray(col.boards) ? col.boards[0] : col.boards;
-      return {
-        ...task,
-        board_title: board.title,
-        column_title: col.title,
-        board_id: board.id,
-      };
-    });
+    return ((data as TaskWithJoins[]) || []).map(
+      (task): TaskWithFullBoardInfo => {
+        const col = Array.isArray(task.columns)
+          ? task.columns[0]
+          : task.columns;
+        const board = Array.isArray(col.boards) ? col.boards[0] : col.boards;
+        // Destructure to exclude join data from the result
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { columns, ...taskData } = task;
+        return {
+          ...taskData,
+          board_title: board.title,
+          column_title: col.title,
+          board_id: board.id,
+        };
+      },
+    );
   },
 };
 
@@ -623,12 +635,16 @@ export const boardDataService = {
       .ilike("title", searchTerm)
       .limit(5);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedTasks = (tasks || []).map((task: any) => {
+    const formattedTasks: TaskWithBoardInfo[] = (
+      (tasks as TaskWithJoins[]) || []
+    ).map((task) => {
       const col = Array.isArray(task.columns) ? task.columns[0] : task.columns;
       const board = Array.isArray(col.boards) ? col.boards[0] : col.boards;
+      // Destructure to exclude join data from the result
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { columns, ...taskData } = task;
       return {
-        ...task,
+        ...taskData,
         board_title: board.title,
         board_id: board.id,
       };
