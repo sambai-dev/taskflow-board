@@ -3,12 +3,14 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 // Define protected routes that require authentication
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/boards(.*)"]);
 
-export default clerkMiddleware(async (auth, req) => {
+const middleware = clerkMiddleware(async (auth, req) => {
   // Protect dashboard and boards routes - redirects to sign-in if unauthenticated
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
 });
+
+export default middleware;
 
 export const config = {
   matcher: [

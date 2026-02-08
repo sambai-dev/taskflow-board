@@ -1,15 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Layout,
-  Zap,
-  GitPullRequest,
-  Code2,
-  ShieldCheck,
-  Box,
-} from "lucide-react";
-import { typography } from "@/lib/design-tokens";
+import { Layout, Zap, ShieldCheck, Box } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

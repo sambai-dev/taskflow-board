@@ -1,17 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
-import {
-  ArrowRight,
-  GitCommitHorizontal,
-  Circle,
-  CheckCircle2,
-} from "lucide-react";
-import { SignedIn, SignedOut, SignUpButton, useUser } from "@clerk/nextjs";
+import { ArrowRight, GitCommitHorizontal, CheckCircle2 } from "lucide-react";
+import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
 import { animation } from "@/lib/design-tokens";
 
 if (typeof window !== "undefined") {
@@ -20,7 +15,6 @@ if (typeof window !== "undefined") {
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const { user } = useUser();
 
   return (
     <section
@@ -89,7 +83,7 @@ export function Hero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
           </span>
-          <span className="font-semibold text-slate-900">v0.1.1</span>
+          <span className="font-semibold text-slate-900">v1.0.0</span>
           <span className="w-px h-3 bg-slate-200 mx-1" />
           <span className="text-slate-500">TaskFlow Board</span>
         </motion.div>

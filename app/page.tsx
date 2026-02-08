@@ -2,7 +2,7 @@ import { LandingAuthCheck } from "@/components/auth/LandingAuthCheck";
 import { LandingButtons } from "@/components/landing/LandingButtons";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ChevronRight, Trello } from "lucide-react";
+import { CheckCircle2, Trello } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

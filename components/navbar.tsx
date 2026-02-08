@@ -6,13 +6,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Trello,
-  ArrowRight,
-  ArrowLeft,
-  MoreHorizontal,
-  Filter,
-} from "lucide-react";
+import { Trello, ArrowLeft, MoreHorizontal, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, useUser, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
