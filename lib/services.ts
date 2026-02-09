@@ -5,7 +5,6 @@ import {
   TaskWithJoins,
   TaskWithBoardInfo,
   TaskWithFullBoardInfo,
-  ColumnWithBoardJoin,
 } from "@/lib/supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 

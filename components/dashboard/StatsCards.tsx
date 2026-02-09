@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Trello,
-  Activity,
-  CheckSquare,
-  Percent,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
+import { Trello, Activity, CheckSquare, Percent } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface StatsCardsProps {

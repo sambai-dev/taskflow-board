@@ -1,11 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { useBoards, BoardWithTaskCount } from "@/lib/hooks/useBoards";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { useUser } from "@clerk/nextjs";
 import { taskService } from "@/lib/services";
-import { Loader2, Plus, Download } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { usePlan } from "@/lib/contexts/PlanContext";
 import { Task } from "@/lib/supabase/models";
@@ -26,7 +28,13 @@ import { UpgradeBanner } from "./UpgradeBanner";
 
 // Dashboard Components
 import { StatsCards } from "./StatsCards";
-import { DashboardCharts } from "./DashboardCharts";
+import { ChartsSkeleton } from "./ChartsSkeleton";
+
+// Lazy-load Recharts (~250KB) - loads after initial page render
+const DashboardCharts = dynamic(
+  () => import("./DashboardCharts").then((mod) => mod.DashboardCharts),
+  { ssr: false, loading: () => <ChartsSkeleton /> },
+);
 import { TasksTable } from "./TasksTable";
 
 interface DashboardClientProps {
@@ -74,7 +82,6 @@ export default function DashboardClient({
   // Export State
   const { supabase } = useSupabase();
   const { user } = useUser();
-  const [isExporting, setIsExporting] = useState(false);
 
   // Handlers
   const handleCreateBoard = async () => {
@@ -108,7 +115,6 @@ export default function DashboardClient({
   const handleExportDashboard = async () => {
     if (!supabase || !user) return;
 
-    setIsExporting(true);
     try {
       // Fetch all recent tasks (limit 1000 for export)
       const allTasks = await taskService.getRecentTasks(
@@ -153,8 +159,6 @@ export default function DashboardClient({
       }
     } catch (error) {
       console.error("Export failed:", error);
-    } finally {
-      setIsExporting(false);
     }
   };
 

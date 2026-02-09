@@ -187,7 +187,7 @@ export function useBoard(boardId: string) {
           schema: "public",
           table: "tasks",
         },
-        (payload) => {
+        (_payload) => {
           // Refresh the board data when tasks change
           loadBoard();
         },
@@ -199,7 +199,7 @@ export function useBoard(boardId: string) {
           schema: "public",
           table: "columns",
         },
-        (payload) => {
+        (_payload) => {
           // Refresh the board data when columns change
           loadBoard();
         },

@@ -12,11 +12,13 @@ import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { Benefits } from "@/components/landing/Benefits";
 import { SystemStatus } from "@/components/landing/SystemStatus";
+import { LazySmoothScroll } from "@/components/landing/LazySmoothScroll";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white selection:bg-blue-100 selection:text-blue-900">
       <LandingAuthCheck />
+      <LazySmoothScroll />
       <Navbar />
 
       <Hero />

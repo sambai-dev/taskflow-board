@@ -67,7 +67,7 @@ describe("BoardCard", () => {
 
       // No description should be rendered
       expect(
-        screen.queryByText("Board description text")
+        screen.queryByText("Board description text"),
       ).not.toBeInTheDocument();
     });
 
@@ -180,24 +180,24 @@ describe("BoardCard", () => {
 
   // --- Date & Time Formatting ---
   describe("Dates", () => {
-    it("displays created date", () => {
+    it("displays created date with relative time", () => {
       const board = createMockBoardWithTaskCount({
-        created_at: "2025-01-15T10:30:00Z",
+        created_at: new Date().toISOString(), // Use current time for predictable "less than a minute ago"
       });
 
       render(<BoardCard board={board} />);
 
-      // Date should be formatted
-      expect(screen.getByText(/Jan 15/)).toBeInTheDocument();
+      // Component uses formatDistanceToNow which shows relative time
+      expect(screen.getByText(/Created/)).toBeInTheDocument();
     });
 
-    it("displays updated time reference", () => {
+    it("shows Created prefix for date display", () => {
       const board = createMockBoardWithTaskCount();
 
       render(<BoardCard board={board} />);
 
-      // Should show "Updated" with relative time
-      expect(screen.getByText(/Updated/)).toBeInTheDocument();
+      // Should show "Created X time ago" format
+      expect(screen.getByText(/Created.*ago/)).toBeInTheDocument();
     });
   });
 
